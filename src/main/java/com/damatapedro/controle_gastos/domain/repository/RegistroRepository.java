@@ -1,6 +1,6 @@
 package com.damatapedro.controle_gastos.domain.repository;
 
-import com.damatapedro.controle_gastos.domain.entity.Registro;
+import com.damatapedro.controle_gastos.domain.model.Registro;
 import com.damatapedro.controle_gastos.enums.Categorias;
 import com.damatapedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,10 +1,9 @@
-package com.damatapedro.controle_gastos.domain.entity;
+package com.damatapedro.controle_gastos.domain.model;
 
 import com.damatapedro.controle_gastos.enums.Categorias;
 import com.damatapedro.controle_gastos.enums.TipoRegistro;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

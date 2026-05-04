@@ -7,6 +7,7 @@ public enum TipoRegistro {
     private final String descricao;
 
     TipoRegistro(String descricao) {
+
         this.descricao = descricao;
     }
 
