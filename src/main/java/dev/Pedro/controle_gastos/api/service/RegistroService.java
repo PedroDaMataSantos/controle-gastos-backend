@@ -5,6 +5,8 @@ import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @Transactional
 
@@ -35,7 +37,9 @@ public class RegistroService {
     //Valida se a Categoria de registro é compatível ao Tipo
 
     public void validarCategoria_Tipo(Registro registro){
+
         //Verifica se o tipo pré definido na Categoria do enum bate com o tipo de registro escolhido
+
         if (!registro.getCategoria().getTipo().equals(registro.getTipoRegistro())){
             throw new RuntimeException("Essa categoria é incompatível com o tipo de registro selecionado");
         }
@@ -47,12 +51,21 @@ public class RegistroService {
         this.repository = repository;
     }
 
+    //Create
+
     public Registro create(Registro registro) {
+
+        if (registro.getData() == null) {
+            registro.setData(LocalDate.now());
+        }
+
         validaCamposObg(registro);
         validarCategoria_Tipo(registro);
 
         return repository.save(registro);
     }
+
+
 
 
 }
