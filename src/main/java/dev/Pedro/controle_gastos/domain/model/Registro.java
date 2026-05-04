@@ -1,7 +1,7 @@
-package com.damatapedro.controle_gastos.domain.model;
+package dev.Pedro.controle_gastos.domain.model;
 
-import com.damatapedro.controle_gastos.enums.Categorias;
-import com.damatapedro.controle_gastos.enums.TipoRegistro;
+import dev.Pedro.controle_gastos.enums.Categorias;
+import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;

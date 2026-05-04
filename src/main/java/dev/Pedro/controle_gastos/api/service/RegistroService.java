@@ -1,7 +1,7 @@
-package com.damatapedro.controle_gastos.api.service;
+package dev.Pedro.controle_gastos.api.service;
 
-import com.damatapedro.controle_gastos.domain.model.Registro;
-import com.damatapedro.controle_gastos.domain.repository.RegistroRepository;
+import dev.Pedro.controle_gastos.domain.model.Registro;
+import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

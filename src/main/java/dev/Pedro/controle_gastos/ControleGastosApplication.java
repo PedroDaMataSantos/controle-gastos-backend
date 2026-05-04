@@ -1,4 +1,4 @@
-package com.damatapedro.controle_gastos;
+package dev.Pedro.controle_gastos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

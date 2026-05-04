@@ -1,4 +1,4 @@
-package com.damatapedro.controle_gastos.enums;
+package dev.Pedro.controle_gastos.enums;
 
 public enum Categorias {
 
