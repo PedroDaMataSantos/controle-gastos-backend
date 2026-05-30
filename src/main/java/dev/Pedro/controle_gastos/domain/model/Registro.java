@@ -18,12 +18,11 @@ import java.time.LocalDate;
     @Table(name="registro")
     @Data
     @NoArgsConstructor
-    @AllArgsConstructor
 
     public class Registro{
         @Id
         @GeneratedValue(strategy= GenerationType.IDENTITY)
-        private int id;
+        private Long id;
 
         @NotNull
         @Enumerated(EnumType.STRING)
@@ -48,7 +47,15 @@ import java.time.LocalDate;
         @NotNull
         @Column(name = "data", nullable = false)
         private LocalDate data;
-        }
+
+    public Registro(TipoRegistro tipoRegistro, Categorias categoria, String descricao, BigDecimal valor, LocalDate data) {
+        this.tipoRegistro = tipoRegistro;
+        this.categoria = categoria;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
+}
 
 
 

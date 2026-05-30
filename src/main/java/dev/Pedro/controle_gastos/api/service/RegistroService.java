@@ -1,5 +1,7 @@
 package dev.Pedro.controle_gastos.api.service;
 
+import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
+import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.model.Registro;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
 import dev.Pedro.controle_gastos.enums.Categorias;
@@ -17,21 +19,18 @@ public class RegistroService {
 
     //validar campos obrigatórios
 
-    public void validaCamposObg (Registro registro){
+    public void validaCamposObg (RegistroRequest registroRequest){
 
-        if(registro.getTipoRegistro() == null){
+        if(registroRequest.tipoRegistro() == null){
             throw new RuntimeException("Tipo é um campo Obrigatório");
         }
 
-        if(registro.getCategoria() == null){
+        if(registroRequest.categoria() == null){
             throw new RuntimeException("Categoria é um campo Obrigatório");
         }
 
-        if(registro.getData() == null){
-            throw new RuntimeException("Data é um campo Obrigatório");
-        }
 
-        if(registro.getValor()== null){
+        if(registroRequest.valor()== null){
             throw new RuntimeException("Valor é um campo Obrigatório");
         }
 
@@ -39,11 +38,11 @@ public class RegistroService {
 
     //Valida se a Categoria de registro é compatível ao Tipo
 
-    public void validarCategoria_Tipo(Registro registro){
+    public void validarCategoria_Tipo(RegistroRequest registroRequest){
 
         //Verifica se o tipo pré definido na Categoria do enum bate com o tipo de registro escolhido
 
-        if (!registro.getCategoria().getTipo().equals(registro.getTipoRegistro())){
+        if (!registroRequest.categoria().getTipo().equals(registroRequest.tipoRegistro())){
             throw new RuntimeException("Essa categoria é incompatível com o tipo de registro selecionado");
         }
     }
@@ -56,40 +55,42 @@ public class RegistroService {
 
     //Create
 
-    public Registro create(Registro registro) {
+    public RegistroResponse create(RegistroRequest registroRequest) {
 
-        if (registro.getData() == null) {
-            registro.setData(LocalDate.now());
-        }
+        validaCamposObg(registroRequest);
+        validarCategoria_Tipo(registroRequest);
 
-        validaCamposObg(registro);
-        validarCategoria_Tipo(registro);
+        Registro registro = toEntity(registroRequest);
 
-        return repository.save(registro);
+        return toResponse(repository.save(registro));
     }
 
-    public Registro update(Long id, Registro novoRegistro){
-
-        //Valida se o registro existe e retorna o erro
-        Registro registroExistente = repository.findById(id).orElseThrow(()->new RuntimeException("Registro não encontrado"));
-
-        //Update
-        registroExistente.setTipoRegistro(novoRegistro.getTipoRegistro());
-
-        registroExistente.setCategoria(novoRegistro.getCategoria());
-
-        registroExistente.setDescricao(novoRegistro.getDescricao());
-
-        registroExistente.setValor(novoRegistro.getValor());
-
-        registroExistente.setData(novoRegistro.getData());
+    public RegistroResponse update(Long id, RegistroRequest registroRequest){
 
         //Valida denovo , para não ocorrer erros
-        validaCamposObg(registroExistente);
-        validarCategoria_Tipo(registroExistente);
+        validaCamposObg(registroRequest);
+        validarCategoria_Tipo(registroRequest);
+
+        //Valida se o registro existe e retorna o erro
+        Registro registroExistente = repository.findById(id)
+                .orElseThrow(()->new RuntimeException("Registro não encontrado"));
+
+        //Update
+        registroExistente.setTipoRegistro(registroRequest.tipoRegistro());
+
+        registroExistente.setCategoria(registroRequest.categoria());
+
+        registroExistente.setDescricao(registroRequest.descricao());
+
+        registroExistente.setValor(registroRequest.valor());
+
+        //Impede que a data seja apagada e passada uma data null
+        if (registroRequest.data() != null) {
+            registroExistente.setData(registroRequest.data());
+        }
 
         //Salva as novas entradas
-        return repository.save(registroExistente);
+        return toResponse(repository.save(registroExistente));
 
     }
 
@@ -128,6 +129,42 @@ public class RegistroService {
 
         return repository.findByTipoRegistro(tipo);
     }
+
+    //Transforma a entrada (Request) em entity para a operação no DB
+    private Registro toEntity(RegistroRequest registroRequest) {
+
+        LocalDate data;
+
+        if (registroRequest.data() == null) {
+            data = LocalDate.now();
+        } else {
+            data = registroRequest.data();
+        }
+
+        return new Registro(
+                registroRequest.tipoRegistro(),
+                registroRequest.categoria(),
+                registroRequest.descricao(),
+                registroRequest.valor(),
+                data
+        );
+    }
+
+    //Transforma a saída em Response para não devolver na forma de entity
+    private RegistroResponse toResponse(Registro registro) {
+
+        return new RegistroResponse(
+                registro.getId(),
+                registro.getTipoRegistro(),
+                registro.getCategoria(),
+                registro.getDescricao(),
+                registro.getValor(),
+                registro.getData()
+        );
+    }
+
+
+
 
 
 }
