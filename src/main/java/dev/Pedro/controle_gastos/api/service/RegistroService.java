@@ -9,7 +9,9 @@ import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,18 +21,18 @@ public class RegistroService {
 
     //validar campos obrigatórios
 
-    public void validaCamposObg (RegistroRequest registroRequest){
+    public void validaCamposObg(RegistroRequest registroRequest) {
 
-        if(registroRequest.tipoRegistro() == null){
+        if (registroRequest.tipoRegistro() == null) {
             throw new RuntimeException("Tipo é um campo Obrigatório");
         }
 
-        if(registroRequest.categoria() == null){
+        if (registroRequest.categoria() == null) {
             throw new RuntimeException("Categoria é um campo Obrigatório");
         }
 
 
-        if(registroRequest.valor()== null){
+        if (registroRequest.valor() == null) {
             throw new RuntimeException("Valor é um campo Obrigatório");
         }
 
@@ -38,11 +40,11 @@ public class RegistroService {
 
     //Valida se a Categoria de registro é compatível ao Tipo
 
-    public void validarCategoria_Tipo(RegistroRequest registroRequest){
+    public void validarCategoria_Tipo(RegistroRequest registroRequest) {
 
         //Verifica se o tipo pré definido na Categoria do enum bate com o tipo de registro escolhido
 
-        if (!registroRequest.categoria().getTipo().equals(registroRequest.tipoRegistro())){
+        if (!registroRequest.categoria().getTipo().equals(registroRequest.tipoRegistro())) {
             throw new RuntimeException("Essa categoria é incompatível com o tipo de registro selecionado");
         }
     }
@@ -65,7 +67,7 @@ public class RegistroService {
         return toResponse(repository.save(registro));
     }
 
-    public RegistroResponse update(Long id, RegistroRequest registroRequest){
+    public RegistroResponse update(Long id, RegistroRequest registroRequest) {
 
         //Valida denovo , para não ocorrer erros
         validaCamposObg(registroRequest);
@@ -73,7 +75,7 @@ public class RegistroService {
 
         //Valida se o registro existe e retorna o erro
         Registro registroExistente = repository.findById(id)
-                .orElseThrow(()->new RuntimeException("Registro não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Registro não encontrado"));
 
         //Update
         registroExistente.setTipoRegistro(registroRequest.tipoRegistro());
@@ -97,37 +99,38 @@ public class RegistroService {
     public void delete(Long id) {
 
         //Verifica se existe
-        Registro registro = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registro não existe"));
-
-        //Exclui
-        repository.delete(registro);
+        if (!repository.existsById(id)) { //<-- Verifica se o ID existe sem carregar o Objeto
+            throw new RuntimeException("Registro não encontrada. id=" + id);
+        }
+        repository.deleteById(id);
     }
 
 
-        //Readers
+    //Readers
+    public RegistroResponse buscaPorId(Long id) {
 
-    public Registro buscaPorId(Long id){
+        Registro registro = repository.findById(id).
+                orElseThrow(() -> new RuntimeException("Registro não encontrado"));
 
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Registro não encontrado"));
-
-    }
-
-    public List<Registro> buscaPorCategoria(Categorias categoria){
-
-        return repository.findByCategoria(categoria);
+        return toResponse(registro);
 
     }
 
-    public List<Registro> buscarPorPeriodo(LocalDate inicio, LocalDate fim) {
+    public List<RegistroResponse> buscaPorCategoria(Categorias categoria) {
 
-        return repository.findByDataBetween(inicio, fim);
+        return listResponse(repository.findByCategoria(categoria));
 
     }
 
-    public List<Registro> buscarPorTipo(TipoRegistro tipo) {
+    public List<RegistroResponse> buscarPorPeriodo(LocalDate inicio, LocalDate fim) {
 
-        return repository.findByTipoRegistro(tipo);
+        return listResponse(repository.findByDataBetween(inicio, fim));
+
+    }
+
+    public List<RegistroResponse> buscarPorTipo(TipoRegistro tipo) {
+
+        return listResponse(repository.findByTipoRegistro(tipo));
     }
 
     //Transforma a entrada (Request) em entity para a operação no DB
@@ -161,7 +164,20 @@ public class RegistroService {
                 registro.getValor(),
                 registro.getData()
         );
+
     }
+
+    private List<RegistroResponse> listResponse(List<Registro> registros) {
+
+        List<RegistroResponse> responses = new ArrayList<>();
+
+        for (Registro registro : registros) {
+
+            responses.add(toResponse(registro));
+        }
+        return responses;
+    }
+
 
 
 
