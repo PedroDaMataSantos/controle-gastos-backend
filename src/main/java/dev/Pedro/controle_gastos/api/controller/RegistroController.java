@@ -30,6 +30,11 @@ public class RegistroController {
         return service.create(registroRequest);
     }
 
+    @GetMapping
+    public List<RegistroResponse> listarTodos() {
+        return service.listarTodos();
+    }
+
     @GetMapping("/{id}")
     public RegistroResponse getId(@PathVariable Long id){
         return service.buscaPorId(id);

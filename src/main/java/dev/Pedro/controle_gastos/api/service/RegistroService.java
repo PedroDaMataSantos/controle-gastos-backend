@@ -133,6 +133,15 @@ public class RegistroService {
         return listResponse(repository.findByTipoRegistro(tipo));
     }
 
+
+    public List<RegistroResponse> listarTodos(){
+
+        return listResponse(repository.findAll());
+
+    }
+
+
+
     //Transforma a entrada (Request) em entity para a operação no DB
     private Registro toEntity(RegistroRequest registroRequest) {
 
