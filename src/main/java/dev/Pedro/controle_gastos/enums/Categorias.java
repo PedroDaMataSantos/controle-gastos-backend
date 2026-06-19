@@ -19,7 +19,15 @@ public enum Categorias {
     INVESTIMENTO("Investimento", TipoRegistro.RECEITA),
     VALES("Vales", TipoRegistro.RECEITA),
     BENEFICIO("Benefícios", TipoRegistro.RECEITA),
-    OUTRAS("Outras receitas", TipoRegistro.RECEITA);
+    OUTRAS("Outras receitas", TipoRegistro.RECEITA),
+
+    //INVESTIMENTO
+    POUPANCA("Salário", TipoRegistro.INVESTIMENTO),
+    RENDA_FIXA("Investimento", TipoRegistro.INVESTIMENTO),
+    RENDA_VARIAVEL("Vales", TipoRegistro.INVESTIMENTO),
+    CRIPTO("Benefícios", TipoRegistro.INVESTIMENTO),
+    OUTRO("Outras receitas", TipoRegistro.INVESTIMENTO);
+
 
     private final String descricao;
     private final TipoRegistro tipo;
