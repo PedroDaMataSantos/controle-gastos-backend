@@ -1,6 +1,6 @@
 package dev.Pedro.controle_gastos.enums;
 
-public enum Categorias {
+public enum CategoriaRegistro {
 
     // GASTOS
     ALIMENTACAO("Alimentação", TipoRegistro.GASTO),
@@ -19,20 +19,14 @@ public enum Categorias {
     INVESTIMENTO("Investimento", TipoRegistro.RECEITA),
     VALES("Vales", TipoRegistro.RECEITA),
     BENEFICIO("Benefícios", TipoRegistro.RECEITA),
-    OUTRAS("Outras receitas", TipoRegistro.RECEITA),
-
-    //INVESTIMENTO
-    POUPANCA("Salário", TipoRegistro.INVESTIMENTO),
-    RENDA_FIXA("Investimento", TipoRegistro.INVESTIMENTO),
-    RENDA_VARIAVEL("Vales", TipoRegistro.INVESTIMENTO),
-    CRIPTO("Benefícios", TipoRegistro.INVESTIMENTO),
-    OUTRO("Outras receitas", TipoRegistro.INVESTIMENTO);
+    OUTRAS("Outras receitas", TipoRegistro.RECEITA);
 
 
     private final String descricao;
     private final TipoRegistro tipo;
 
-    Categorias(String descricao, TipoRegistro tipo) {
+
+    CategoriaRegistro(String descricao, TipoRegistro tipo) {
         this.descricao = descricao;
         this.tipo = tipo;
     }

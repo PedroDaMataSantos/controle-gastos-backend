@@ -4,7 +4,7 @@ package dev.Pedro.controle_gastos.api.controller;
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.api.service.RegistroService;
-import dev.Pedro.controle_gastos.enums.Categorias;
+import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,7 @@ public class RegistroController {
     }
 
     @GetMapping("/categoria/{categoria}")
-     public List <RegistroResponse> getCategoria(@PathVariable Categorias categoria){
+     public List <RegistroResponse> getCategoria(@PathVariable CategoriaRegistro categoria){
         return service.buscaPorCategoria(categoria);
 
     }

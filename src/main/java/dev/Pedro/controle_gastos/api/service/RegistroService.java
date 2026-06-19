@@ -4,7 +4,7 @@ import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
-import dev.Pedro.controle_gastos.enums.Categorias;
+import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,7 +115,7 @@ public class RegistroService {
 
     }
 
-    public List<RegistroResponse> buscaPorCategoria(Categorias categoria) {
+    public List<RegistroResponse> buscaPorCategoria(CategoriaRegistro categoria) {
 
         return listResponse(repository.findByCategoria(categoria));
 

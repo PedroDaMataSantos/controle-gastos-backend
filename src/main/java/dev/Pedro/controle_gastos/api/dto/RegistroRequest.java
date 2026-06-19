@@ -1,6 +1,6 @@
 package dev.Pedro.controle_gastos.api.dto;
 
-import dev.Pedro.controle_gastos.enums.Categorias;
+import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public record RegistroRequest(
 
         TipoRegistro tipoRegistro,
-        Categorias categoria,
+        CategoriaRegistro categoria,
         String descricao,
         BigDecimal valor,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

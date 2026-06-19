@@ -1,7 +1,7 @@
 package dev.Pedro.controle_gastos.domain.repository;
 
 import dev.Pedro.controle_gastos.domain.entity.Registro;
-import dev.Pedro.controle_gastos.enums.Categorias;
+import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,6 +14,6 @@ public interface RegistroRepository extends JpaRepository<Registro, Long> {
 
     List<Registro> findByTipoRegistro(TipoRegistro tipo);
 
-    List<Registro> findByCategoria(Categorias categoria);
+    List<Registro> findByCategoria(CategoriaRegistro categoria);
 
 }
