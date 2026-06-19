@@ -1,7 +1,6 @@
 package dev.Pedro.controle_gastos.domain.entity;
 
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
-import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;

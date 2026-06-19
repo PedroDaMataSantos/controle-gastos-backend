@@ -42,16 +42,21 @@ import java.time.LocalDate;
 
         @NotNull
         @Digits(integer = 10, fraction = 2)
-        @Column(name = "total", nullable = false, precision = 12, scale = 2)
-         private BigDecimal total;
+        @Column(name = "valor", nullable = false, precision = 12, scale = 2)
+         private BigDecimal valor;
 
         @NotNull
         @Column(name = "data", nullable = false)
         private LocalDate data;
 
 
-
-
+    public Registro(TipoRegistro tipoRegistro, CategoriaRegistro categoria, String descricao, BigDecimal valor, LocalDate data) {
+        this.tipoRegistro = tipoRegistro;
+        this.categoria = categoria;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
 }
 
 
