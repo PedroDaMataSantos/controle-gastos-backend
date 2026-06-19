@@ -1,6 +1,6 @@
 package dev.Pedro.controle_gastos.domain.repository;
 
-import dev.Pedro.controle_gastos.domain.model.Registro;
+import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.enums.Categorias;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.data.jpa.repository.JpaRepository;
