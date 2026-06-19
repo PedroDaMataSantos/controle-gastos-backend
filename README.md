@@ -66,7 +66,7 @@ Permite remover registros financeiros do sistema.
 - Hibernate
 
 ## Banco de Dados
-- PostgreSQL
+- H2
 
 ## Ferramentas
 - Maven
@@ -99,7 +99,7 @@ Controller → Service → Repository → Banco de Dados
 # Status do Projeto
 
 ```text
-Em desenvolvimento
+Concluída a V1
 ```
 
 ---
