@@ -98,7 +98,7 @@ public class RegistroService {
     public void delete(Long id) {
 
         //Verifica se existe
-        if (!repository.existsById(id)) { //<-- Verifica se o ID existe sem carregar o Objeto
+        if (!repository.existsById(id)) {
             throw new RuntimeException("Registro não encontrada. id=" + id);
         }
         repository.deleteById(id);
