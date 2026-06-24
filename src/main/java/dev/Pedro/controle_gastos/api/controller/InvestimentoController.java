@@ -38,31 +38,31 @@ public class InvestimentoController {
     @GetMapping("/{id}")
     public InvestimentoResponse getId(@PathVariable Long id) {
 
-        return service.buscarId(id);
+        return service.findById(id);
 
 
     }
 
     @GetMapping("/categoria/{categoria}")
-    public List<InvestimentoResponse> getCategoria(@PathVariable CategoriaInvestimento categoria) {
+    public List<InvestimentoResponse> getByCategoria(@PathVariable CategoriaInvestimento categoria) {
 
-        return service.buscarCategoria(categoria);
+        return service.findByCategoria(categoria);
 
     }
 
     @GetMapping("/periodo")
-    public List<InvestimentoResponse> getPeriodo(
+    public List<InvestimentoResponse> getByPeriodo(
             @RequestParam LocalDate inicio,
             @RequestParam LocalDate fim
     ) {
 
-        return service.buscarEntre(inicio, fim);
+        return service.findByPeriodo(inicio, fim);
     }
 
     @GetMapping
     public List<InvestimentoResponse> findAll() {
 
-        return service.listarTodos();
+        return service.findAll();
     }
 
     @DeleteMapping("/{id}")

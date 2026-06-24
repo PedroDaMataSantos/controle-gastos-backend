@@ -83,7 +83,7 @@ public class InvestimentoService {
 
     }
 
-    public InvestimentoResponse buscarId(Long id) {
+    public InvestimentoResponse findById(Long id) {
 
         Investimento investimento = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
@@ -92,18 +92,18 @@ public class InvestimentoService {
         return toResponse(investimento);
     }
 
-    public List<InvestimentoResponse> buscarCategoria(CategoriaInvestimento categoria) {
+    public List<InvestimentoResponse> findByCategoria(CategoriaInvestimento categoria) {
 
         return listResponse(repository.findByCategoria(categoria));
 
     }
 
-    public List<InvestimentoResponse> buscarEntre(LocalDate inicio, LocalDate fim) {
+    public List<InvestimentoResponse> findByPeriodo(LocalDate inicio, LocalDate fim) {
 
         return listResponse(repository.findByDataBetween(inicio, fim));
     }
 
-    public List<InvestimentoResponse> listarTodos() {
+    public List<InvestimentoResponse> findAll() {
 
         return listResponse(repository.findAll());
     }

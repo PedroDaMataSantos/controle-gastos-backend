@@ -106,7 +106,7 @@ public class RegistroService {
 
 
     //Readers
-    public RegistroResponse buscaPorId(Long id) {
+    public RegistroResponse findById(Long id) {
 
         Registro registro = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Registro não encontrado"));
@@ -115,25 +115,25 @@ public class RegistroService {
 
     }
 
-    public List<RegistroResponse> buscaPorCategoria(CategoriaRegistro categoria) {
+    public List<RegistroResponse> findByCategoria(CategoriaRegistro categoria) {
 
         return listResponse(repository.findByCategoria(categoria));
 
     }
 
-    public List<RegistroResponse> buscarPorPeriodo(LocalDate inicio, LocalDate fim) {
+    public List<RegistroResponse> findByPeriodo(LocalDate inicio, LocalDate fim) {
 
         return listResponse(repository.findByDataBetween(inicio, fim));
 
     }
 
-    public List<RegistroResponse> buscarPorTipo(TipoRegistro tipo) {
+    public List<RegistroResponse> findByTipo(TipoRegistro tipo) {
 
         return listResponse(repository.findByTipoRegistro(tipo));
     }
 
 
-    public List<RegistroResponse> listarTodos() {
+    public List<RegistroResponse> findAll() {
 
         return listResponse(repository.findAll());
 

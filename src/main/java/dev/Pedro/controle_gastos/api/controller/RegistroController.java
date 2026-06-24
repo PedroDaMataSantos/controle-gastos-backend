@@ -31,34 +31,34 @@ public class RegistroController {
     }
 
     @GetMapping
-    public List<RegistroResponse> listarTodos() {
-        return service.listarTodos();
+    public List<RegistroResponse> getAll() {
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public RegistroResponse getId(@PathVariable Long id) {
-        return service.buscaPorId(id);
+    public RegistroResponse getById(@PathVariable Long id) {
+        return service.findById(id);
 
     }
 
     @GetMapping("/categoria/{categoria}")
-    public List<RegistroResponse> getCategoria(@PathVariable CategoriaRegistro categoria) {
-        return service.buscaPorCategoria(categoria);
+    public List<RegistroResponse> getByCategoria(@PathVariable CategoriaRegistro categoria) {
+        return service.findByCategoria(categoria);
 
     }
 
     @GetMapping("/tipo/{tipo}")
-    public List<RegistroResponse> getTipo(@PathVariable TipoRegistro tipo) {
-        return service.buscarPorTipo(tipo);
+    public List<RegistroResponse> getByTipo(@PathVariable TipoRegistro tipo) {
+        return service.findByTipo(tipo);
 
     }
 
     @GetMapping("/periodo")
-    public List<RegistroResponse> getPeriodo(
+    public List<RegistroResponse> getByPeriodo(
             @RequestParam LocalDate inicio,
             @RequestParam LocalDate fim) {
 
-        return service.buscarPorPeriodo(inicio, fim);
+        return service.findByPeriodo(inicio, fim);
     }
 
     @PutMapping("/{id}")
