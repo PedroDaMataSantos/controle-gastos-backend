@@ -10,7 +10,8 @@ public record DashboardResponse(
         BigDecimal receitaTotal,
         BigDecimal receitaMensal,
         BigDecimal investimentoTotal,
-        BigDecimal investimentoMensal
+        BigDecimal investimentoMensal,
+        BigDecimal patrimonio
 
 ) {
 }

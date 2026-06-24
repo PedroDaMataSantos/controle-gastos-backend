@@ -8,6 +8,7 @@ import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,14 @@ public class InvestimentoService {
 
     }
 
+    public void validaValor(InvestimentoRequest investimentoRequest){
+
+        if (investimentoRequest.valorAplicado().compareTo(BigDecimal.ZERO)<=0){
+            throw new RuntimeException("O valor deve ser um número positivo e maior que 0");
+        }
+
+    }
+
 
     private final InvestimentoRepository repository;
 
@@ -40,7 +49,7 @@ public class InvestimentoService {
     public InvestimentoResponse create(InvestimentoRequest investimentoRequest) {
 
         validaCampoObg(investimentoRequest);
-
+        validaValor(investimentoRequest);
         Investimento investimento = toEntity(investimentoRequest);
 
         return toResponse(repository.save(investimento));
@@ -51,6 +60,7 @@ public class InvestimentoService {
     public InvestimentoResponse update(Long id, InvestimentoRequest investimentoRequest) {
 
         validaCampoObg(investimentoRequest);
+        validaValor(investimentoRequest);
 
         Investimento investimentoExistente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Investimento não encontrado"));

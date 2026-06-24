@@ -1,5 +1,6 @@
 package dev.Pedro.controle_gastos.api.service;
 
+
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
@@ -9,6 +10,7 @@ import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,14 @@ public class RegistroService {
         }
     }
 
+    public void validaValor(RegistroRequest registroRequest){
+
+        if (registroRequest.valor().compareTo(BigDecimal.ZERO)<=0){
+            throw new RuntimeException("O valor deve ser um número positivo e maior que 0");
+        }
+
+    }
+
     private final RegistroRepository repository;
 
     public RegistroService(RegistroRepository repository) {
@@ -60,6 +70,7 @@ public class RegistroService {
 
         validaCamposObg(registroRequest);
         validarCategoria_Tipo(registroRequest);
+        validaValor(registroRequest);
 
         Registro registro = toEntity(registroRequest);
 
@@ -71,6 +82,7 @@ public class RegistroService {
         //Valida denovo , para não ocorrer erros
         validaCamposObg(registroRequest);
         validarCategoria_Tipo(registroRequest);
+        validaValor(registroRequest);
 
         //Valida se o registro existe e retorna o erro
         Registro registroExistente = repository.findById(id)

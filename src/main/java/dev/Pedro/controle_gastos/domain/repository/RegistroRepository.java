@@ -16,4 +16,6 @@ public interface RegistroRepository extends JpaRepository<Registro, Long> {
 
     List<Registro> findByCategoria(CategoriaRegistro categoria);
 
+    List<Registro> findByTipoRegistroAndDataBetween(TipoRegistro tipoRegistro, LocalDate inicio, LocalDate fim);
+
 }
