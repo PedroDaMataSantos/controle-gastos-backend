@@ -36,19 +36,19 @@ public class RegistroController {
     }
 
     @GetMapping("/{id}")
-    public RegistroResponse getId(@PathVariable Long id){
+    public RegistroResponse getId(@PathVariable Long id) {
         return service.buscaPorId(id);
 
     }
 
     @GetMapping("/categoria/{categoria}")
-     public List <RegistroResponse> getCategoria(@PathVariable CategoriaRegistro categoria){
+    public List<RegistroResponse> getCategoria(@PathVariable CategoriaRegistro categoria) {
         return service.buscaPorCategoria(categoria);
 
     }
 
     @GetMapping("/tipo/{tipo}")
-    public List <RegistroResponse> getTipo(@PathVariable TipoRegistro tipo){
+    public List<RegistroResponse> getTipo(@PathVariable TipoRegistro tipo) {
         return service.buscarPorTipo(tipo);
 
     }
@@ -62,22 +62,18 @@ public class RegistroController {
     }
 
     @PutMapping("/{id}")
-    public RegistroResponse update(@PathVariable Long id ,@RequestBody RegistroRequest req){
-        return service.update(id,req);
+    public RegistroResponse update(@PathVariable Long id, @RequestBody RegistroRequest req) {
+        return service.update(id, req);
 
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
 
-    public void  delete(@PathVariable Long id){
-         service.delete(id);
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
 
     }
-
-
-
-
 
 
 }

@@ -17,18 +17,17 @@ import java.util.List;
 
 public class InvestimentoService {
 
-    public void validaCampoObg(InvestimentoRequest investimentoRequest){
+    public void validaCampoObg(InvestimentoRequest investimentoRequest) {
 
-        if(investimentoRequest.valorAplicado() == null){
+        if (investimentoRequest.valorAplicado() == null) {
             throw new RuntimeException("Valor Aplicado é um campo Obrigatório");
         }
 
-        if(investimentoRequest.categoria() == null){
+        if (investimentoRequest.categoria() == null) {
             throw new RuntimeException("Categoria é um campo Obrigatório");
         }
 
     }
-
 
 
     private final InvestimentoRepository repository;
@@ -38,7 +37,7 @@ public class InvestimentoService {
         this.repository = investimentoRepository;
     }
 
-    public InvestimentoResponse create(InvestimentoRequest investimentoRequest){
+    public InvestimentoResponse create(InvestimentoRequest investimentoRequest) {
 
         validaCampoObg(investimentoRequest);
 
@@ -49,7 +48,7 @@ public class InvestimentoService {
     }
 
 
-    public InvestimentoResponse update (Long id , InvestimentoRequest investimentoRequest){
+    public InvestimentoResponse update(Long id, InvestimentoRequest investimentoRequest) {
 
         validaCampoObg(investimentoRequest);
 
@@ -61,7 +60,7 @@ public class InvestimentoService {
 
         investimentoExistente.setDescricao(investimentoRequest.descricao());
 
-        if(investimentoRequest.data() != null) {
+        if (investimentoRequest.data() != null) {
 
             investimentoExistente.setData(investimentoRequest.data());
         }
@@ -72,51 +71,51 @@ public class InvestimentoService {
     }
 
 
-    public void delete(Long id){
+    public void delete(Long id) {
 
-        if(!repository.existsById(id)){
+        if (!repository.existsById(id)) {
 
             throw new RuntimeException("Investimento não encontrada. id=" + id);
         }
 
 
-         repository.deleteById(id);
+        repository.deleteById(id);
 
     }
 
-    public InvestimentoResponse buscarId (Long id){
+    public InvestimentoResponse buscarId(Long id) {
 
         Investimento investimento = repository.findById(id).
-                        orElseThrow(() -> new RuntimeException("Investimento não encontrado"));;
+                orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
+        ;
 
         return toResponse(investimento);
     }
 
-    public List <InvestimentoResponse> buscarCategoria (CategoriaInvestimento categoria){
+    public List<InvestimentoResponse> buscarCategoria(CategoriaInvestimento categoria) {
 
         return listResponse(repository.findByCategoria(categoria));
 
     }
 
-    public List<InvestimentoResponse> buscarEntre (LocalDate inicio , LocalDate fim){
+    public List<InvestimentoResponse> buscarEntre(LocalDate inicio, LocalDate fim) {
 
-        return listResponse(repository.findByDataBetween(inicio,fim));
+        return listResponse(repository.findByDataBetween(inicio, fim));
     }
 
-    public List<InvestimentoResponse> listarTodos (){
+    public List<InvestimentoResponse> listarTodos() {
 
         return listResponse(repository.findAll());
     }
 
 
+    public Investimento toEntity(InvestimentoRequest investimentoRequest) {
 
-    public Investimento toEntity(InvestimentoRequest investimentoRequest){
+        LocalDate data;
 
-        LocalDate data ;
-
-        if(investimentoRequest.data()==null){
+        if (investimentoRequest.data() == null) {
             data = LocalDate.now();
-        }else{
+        } else {
             data = investimentoRequest.data();
         }
 
@@ -129,7 +128,7 @@ public class InvestimentoService {
         );
     }
 
-    public InvestimentoResponse toResponse(Investimento investimento){
+    public InvestimentoResponse toResponse(Investimento investimento) {
 
         return new InvestimentoResponse(
                 investimento.getId(),
@@ -140,7 +139,7 @@ public class InvestimentoService {
         );
     }
 
-    public List<InvestimentoResponse> listResponse( List <Investimento> investimentos){
+    public List<InvestimentoResponse> listResponse(List<Investimento> investimentos) {
 
         List<InvestimentoResponse> responses = new ArrayList<>();
 

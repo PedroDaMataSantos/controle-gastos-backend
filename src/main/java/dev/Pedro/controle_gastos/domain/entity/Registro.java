@@ -15,39 +15,39 @@ import java.time.LocalDate;
 
 
 @Entity
-    @Table(name="registro")
-    @Getter
-    @Setter
-    @NoArgsConstructor
+@Table(name = "registro")
+@Getter
+@Setter
+@NoArgsConstructor
 
-    public class Registro{
-        @Id
-        @GeneratedValue(strategy= GenerationType.IDENTITY)
-        private Long id;
+public class Registro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @NotNull
-        @Enumerated(EnumType.STRING)
-        @Column(name = "tipo_registro", nullable = false, length = 20)
-        private TipoRegistro tipoRegistro;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_registro", nullable = false, length = 20)
+    private TipoRegistro tipoRegistro;
 
-        @NotNull
-        @Enumerated(EnumType.STRING)
-        @Column(name = "categoria", nullable = false, length = 20)
-        private CategoriaRegistro categoria;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoria", nullable = false, length = 20)
+    private CategoriaRegistro categoria;
 
 
-        @Size(max = 200)
-        @Column(name = "descricao",nullable = true,length = 200 )
-        private String descricao;
+    @Size(max = 200)
+    @Column(name = "descricao", nullable = true, length = 200)
+    private String descricao;
 
-        @NotNull
-        @Digits(integer = 10, fraction = 2)
-        @Column(name = "valor", nullable = false, precision = 12, scale = 2)
-         private BigDecimal valor;
+    @NotNull
+    @Digits(integer = 10, fraction = 2)
+    @Column(name = "valor", nullable = false, precision = 12, scale = 2)
+    private BigDecimal valor;
 
-        @NotNull
-        @Column(name = "data", nullable = false)
-        private LocalDate data;
+    @NotNull
+    @Column(name = "data", nullable = false)
+    private LocalDate data;
 
 
     public Registro(TipoRegistro tipoRegistro, CategoriaRegistro categoria, String descricao, BigDecimal valor, LocalDate data) {

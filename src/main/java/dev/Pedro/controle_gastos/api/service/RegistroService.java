@@ -133,12 +133,11 @@ public class RegistroService {
     }
 
 
-    public List<RegistroResponse> listarTodos(){
+    public List<RegistroResponse> listarTodos() {
 
         return listResponse(repository.findAll());
 
     }
-
 
 
     //Transforma a entrada (Request) em entity para a operação no DB
@@ -185,10 +184,6 @@ public class RegistroService {
         }
         return responses;
     }
-
-
-
-
 
 
 }

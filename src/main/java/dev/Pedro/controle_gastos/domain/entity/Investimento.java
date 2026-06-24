@@ -7,14 +7,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-    @Table(name="investimento")
-    @Getter
-    @Setter
-    @NoArgsConstructor
+@Table(name = "investimento")
+@Getter
+@Setter
+@NoArgsConstructor
 
 public class Investimento {
 
@@ -22,7 +23,7 @@ public class Investimento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "descricao",nullable = true,length = 200 )
+    @Column(name = "descricao", nullable = true, length = 200)
     private String descricao;
 
     @NotNull
@@ -31,7 +32,7 @@ public class Investimento {
     private BigDecimal valorAplicado;
 
     @NotNull
-    @Column(name = "data", nullable = false )
+    @Column(name = "data", nullable = false)
     private LocalDate data;
 
     @NotNull
