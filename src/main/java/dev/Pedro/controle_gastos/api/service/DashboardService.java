@@ -1,5 +1,6 @@
 package dev.Pedro.controle_gastos.api.service;
 
+import dev.Pedro.controle_gastos.api.dto.DashboardResponse;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
@@ -26,6 +27,21 @@ public class DashboardService {
         this.investimentoRepository = investimentoRepository;
     }
 
+
+    public DashboardResponse dashboard() {
+
+        return new DashboardResponse(
+                saldoTotal(),
+                saldoMensal(),
+                totalSaida(),
+                saidaMensal(),
+                totalEntrada(),
+                entradaMensal(),
+                totalInvestido(),
+                investimentoMensal(),
+                patrimonio()
+        );
+    }
 
     public BigDecimal totalInvestido() {
 
@@ -56,12 +72,17 @@ public class DashboardService {
 
     public BigDecimal entradaMensal() {
 
-        return somaMensal(TipoRegistro.RECEITA);
+        return somaRegistroMensal(TipoRegistro.RECEITA);
     }
 
     public BigDecimal saidaMensal() {
 
-        return somaMensal(TipoRegistro.GASTO);
+        return somaRegistroMensal(TipoRegistro.GASTO);
+    }
+
+    public BigDecimal investimentoMensal(){
+
+        return somaInvestimentoMensal();
     }
 
 
@@ -98,7 +119,7 @@ public class DashboardService {
         return total;
     }
 
-    private BigDecimal somaMensal(TipoRegistro tipo){
+    private BigDecimal somaRegistroMensal(TipoRegistro tipo){
 
         LocalDate hoje = LocalDate.now();
         LocalDate inicio = hoje.withDayOfMonth(1);
@@ -110,7 +131,18 @@ public class DashboardService {
                 inicio,
                 fim
         ));
+
     }
+
+    private BigDecimal somaInvestimentoMensal(){
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.withDayOfMonth(1);
+        LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+
+        return somarInvestimentos(investimentoRepository.findByDataBetween(inicio,fim));
+    }
+
+
 
 
 }
