@@ -1,6 +1,5 @@
 package dev.Pedro.controle_gastos.api.service;
 
-import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
@@ -21,54 +20,28 @@ public class DashboardService {
     private final RegistroRepository registroRepository;
     private final InvestimentoRepository investimentoRepository;
 
-    public DashboardService(RegistroRepository registroRepository,InvestimentoRepository investimentoRepository){
+    public DashboardService(RegistroRepository registroRepository, InvestimentoRepository investimentoRepository) {
 
         this.registroRepository = registroRepository;
         this.investimentoRepository = investimentoRepository;
     }
 
 
-    public BigDecimal totalInvestido(){
+    public BigDecimal totalInvestido() {
 
-        List<Investimento> investimentos = investimentoRepository.findAll();
-
-        BigDecimal total = BigDecimal.ZERO;
-
-        for (Investimento investimento : investimentos){
-
-            total = total.add(investimento.getValorAplicado());
-        }
-
-        return total;
+        return somarInvestimentos(investimentoRepository.findAll());
 
     }
 
-    public BigDecimal totalEntrada(){
+    public BigDecimal totalEntrada() {
 
-        List<Registro> entradas = registroRepository.findByTipoRegistro(TipoRegistro.RECEITA);
-
-        BigDecimal total = BigDecimal.ZERO;
-
-        for (Registro registro : entradas){
-            total = total.add(registro.getValor());
-        }
-
-        return total;
+        return somarRegistros(registroRepository.findByTipoRegistro(TipoRegistro.RECEITA));
 
     }
 
-    public BigDecimal totalSaida(){
+    public BigDecimal totalSaida() {
 
-        List <Registro> saidas = registroRepository.findByTipoRegistro(TipoRegistro.GASTO);
-
-        BigDecimal total = BigDecimal.ZERO;
-
-        for(Registro registro : saidas){
-
-            total = total.add(registro.getValor());
-        }
-
-        return total;
+        return somarRegistros(registroRepository.findByTipoRegistro(TipoRegistro.GASTO));
     }
 
     public BigDecimal saldoTotal() {
@@ -76,33 +49,71 @@ public class DashboardService {
         return totalEntrada().subtract(totalSaida());
     }
 
-    public BigDecimal patrimonio(){
+    public BigDecimal patrimonio() {
 
         return saldoTotal().add(totalInvestido());
     }
 
-    public BigDecimal entradaMensal(){
+    public BigDecimal entradaMensal() {
 
-        LocalDate hoje = LocalDate.now();
+        return somaMensal(TipoRegistro.RECEITA);
+    }
 
-        LocalDate inicio = hoje.withDayOfMonth(1);
+    public BigDecimal saidaMensal() {
 
-        LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+        return somaMensal(TipoRegistro.GASTO);
+    }
 
-        List<Registro> entradaMensal = registroRepository.findByTipoRegistroAndDataBetween(TipoRegistro.RECEITA,inicio,fim);
+
+    public BigDecimal saldoMensal() {
+
+        return entradaMensal().subtract(saidaMensal());
+
+    }
+
+
+    private BigDecimal somarRegistros(List<Registro> registros) {
 
         BigDecimal total = BigDecimal.ZERO;
 
-        for (Registro registro : entradaMensal) {
+        for (Registro registro : registros) {
 
             total = total.add(registro.getValor());
         }
 
         return total;
+
+    }
+
+    private BigDecimal somarInvestimentos(List<Investimento> investimentos) {
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Investimento investimento : investimentos) {
+
+            total = total.add(investimento.getValorAplicado());
+
+        }
+
+        return total;
+    }
+
+    private BigDecimal somaMensal(TipoRegistro tipo){
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.withDayOfMonth(1);
+        LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+
+
+        return somarRegistros(registroRepository.findByTipoRegistroAndDataBetween(
+                tipo,
+                inicio,
+                fim
+        ));
     }
 
 
-    }
+}
 
 
 
