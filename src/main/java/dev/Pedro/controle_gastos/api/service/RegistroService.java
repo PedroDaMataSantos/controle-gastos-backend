@@ -152,6 +152,12 @@ public class RegistroService {
     }
 
 
+    public  List<RegistroResponse> findByDescricao(String descricao){
+
+        return listResponse(repository.findByDescricaoContainingIgnoreCase(descricao));
+    }
+
+
     //Transforma a entrada (Request) em entity para a operação no DB
     private Registro toEntity(RegistroRequest registroRequest) {
 

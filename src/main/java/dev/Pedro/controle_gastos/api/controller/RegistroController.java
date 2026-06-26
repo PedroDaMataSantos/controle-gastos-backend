@@ -53,6 +53,15 @@ public class RegistroController {
 
     }
 
+    @GetMapping("/descricao/{descricao}")
+
+    public List<RegistroResponse> getByDescricao(@PathVariable String descricao) {
+        return service.findByDescricao(descricao);
+
+    }
+
+
+
     @GetMapping("/periodo")
     public List<RegistroResponse> getByPeriodo(
             @RequestParam LocalDate inicio,
