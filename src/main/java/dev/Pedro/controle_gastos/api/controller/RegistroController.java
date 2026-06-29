@@ -4,11 +4,14 @@ package dev.Pedro.controle_gastos.api.controller;
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.api.service.RegistroService;
+import dev.Pedro.controle_gastos.domain.entity.Investimento;
+import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
 import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,6 +31,13 @@ public class RegistroController {
     public RegistroResponse create(@RequestBody RegistroRequest registroRequest) {
 
         return service.create(registroRequest);
+    }
+
+    @PostMapping("/aportar")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Investimento investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria, @RequestParam String descricao) {
+
+        return service.investir(valor, categoria, descricao);
     }
 
     @GetMapping
