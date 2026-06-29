@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.domain.entity;
 
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
+import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -40,11 +41,17 @@ public class Investimento {
     @Column(name = "categoria", nullable = false, length = 20)
     private CategoriaInvestimento categoria;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo", nullable = false)
+    private TipoInvestimento tipo;
 
-    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria) {
+
+    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo) {
         this.descricao = descricao;
         this.valorAplicado = valorAplicado;
         this.data = data;
         this.categoria = categoria;
+        this.tipo = tipo;
     }
 }

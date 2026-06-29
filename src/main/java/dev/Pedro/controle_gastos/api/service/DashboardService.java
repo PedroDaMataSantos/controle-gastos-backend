@@ -5,6 +5,7 @@ import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
+import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class DashboardService {
 
     public BigDecimal saldoTotal() {
 
-        return totalEntrada().subtract(totalSaida());
+        return totalEntrada().subtract(totalSaida()).subtract(aporte());
     }
 
     public BigDecimal patrimonio() {
@@ -88,8 +89,18 @@ public class DashboardService {
 
     public BigDecimal saldoMensal() {
 
-        return entradaMensal().subtract(saidaMensal());
+        return entradaMensal().subtract(saidaMensal()).subtract(aporteMensal());
 
+    }
+
+    public BigDecimal aporteMensal() {
+
+        return somarAporteMensal(TipoInvestimento.APORTE);
+    }
+
+    public BigDecimal aporte(){
+
+        return somarAporte(TipoInvestimento.APORTE);
     }
 
 
@@ -135,11 +146,33 @@ public class DashboardService {
     }
 
     private BigDecimal somaInvestimentoMensal(){
+
         LocalDate hoje = LocalDate.now();
         LocalDate inicio = hoje.withDayOfMonth(1);
         LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
 
         return somarInvestimentos(investimentoRepository.findByDataBetween(inicio,fim));
+    }
+
+
+    private BigDecimal somarAporte(TipoInvestimento tipo){
+
+        return somarInvestimentos(investimentoRepository.findByTipoInvestimento(tipo));
+
+    }
+
+    private BigDecimal somarAporteMensal(TipoInvestimento tipo){
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.withDayOfMonth(1);
+        LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+
+        return somarInvestimentos(investimentoRepository.findByTipoInvestimentoAndDataBetween(
+                tipo,
+                inicio,
+                fim
+        ));
+
     }
 
 

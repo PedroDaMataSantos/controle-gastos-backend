@@ -3,9 +3,13 @@ package dev.Pedro.controle_gastos.api.service;
 
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
+import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
+import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
+import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
 import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
+import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,48 +24,13 @@ import java.util.List;
 
 public class RegistroService {
 
-    //validar campos obrigatórios
-
-    public void validaCamposObg(RegistroRequest registroRequest) {
-
-        if (registroRequest.tipoRegistro() == null) {
-            throw new RuntimeException("Tipo é um campo Obrigatório");
-        }
-
-        if (registroRequest.categoria() == null) {
-            throw new RuntimeException("Categoria é um campo Obrigatório");
-        }
-
-
-        if (registroRequest.valor() == null) {
-            throw new RuntimeException("Valor é um campo Obrigatório");
-        }
-
-    }
-
-    //Valida se a Categoria de registro é compatível ao Tipo
-
-    public void validarCategoria_Tipo(RegistroRequest registroRequest) {
-
-        //Verifica se o tipo pré definido na Categoria do enum bate com o tipo de registro escolhido
-
-        if (!registroRequest.categoria().getTipo().equals(registroRequest.tipoRegistro())) {
-            throw new RuntimeException("Essa categoria é incompatível com o tipo de registro selecionado");
-        }
-    }
-
-    public void validaValor(RegistroRequest registroRequest){
-
-        if (registroRequest.valor().compareTo(BigDecimal.ZERO)<=0){
-            throw new RuntimeException("O valor deve ser um número positivo e maior que 0");
-        }
-
-    }
 
     private final RegistroRepository repository;
+    private final InvestimentoRepository investimentoRepository;
 
-    public RegistroService(RegistroRepository repository) {
+    public RegistroService(RegistroRepository repository, InvestimentoRepository investimentoRepository) {
         this.repository = repository;
+        this.investimentoRepository = investimentoRepository;
     }
 
     //Create
@@ -157,6 +126,63 @@ public class RegistroService {
         return listResponse(repository.findByDescricaoContainingIgnoreCase(descricao));
     }
 
+
+    //validar campos obrigatórios
+
+    public void validaCamposObg(RegistroRequest registroRequest) {
+
+        if (registroRequest.tipoRegistro() == null) {
+            throw new RuntimeException("Tipo é um campo Obrigatório");
+        }
+
+        if (registroRequest.categoria() == null) {
+            throw new RuntimeException("Categoria é um campo Obrigatório");
+        }
+
+
+        if (registroRequest.valor() == null) {
+            throw new RuntimeException("Valor é um campo Obrigatório");
+        }
+
+    }
+        public Investimento investir(BigDecimal valor, CategoriaInvestimento categoria, String descricao) {
+
+            if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new RuntimeException("O valor deve ser maior que zero.");
+            }
+
+            Investimento investimento = new Investimento(
+                    descricao,
+                    valor,
+                    LocalDate.now(),
+                    categoria,
+                    TipoInvestimento.APORTE
+            );
+
+            return investimentoRepository.save(investimento);
+        }
+
+
+
+
+    //Valida se a Categoria de registro é compatível ao Tipo
+
+    public void validarCategoria_Tipo(RegistroRequest registroRequest) {
+
+        //Verifica se o tipo pré definido na Categoria do enum bate com o tipo de registro escolhido
+
+        if (!registroRequest.categoria().getTipo().equals(registroRequest.tipoRegistro())) {
+            throw new RuntimeException("Essa categoria é incompatível com o tipo de registro selecionado");
+        }
+    }
+
+    public void validaValor(RegistroRequest registroRequest){
+
+        if (registroRequest.valor().compareTo(BigDecimal.ZERO)<=0){
+            throw new RuntimeException("O valor deve ser um número positivo e maior que 0");
+        }
+
+    }
 
     //Transforma a entrada (Request) em entity para a operação no DB
     private Registro toEntity(RegistroRequest registroRequest) {
