@@ -187,7 +187,7 @@ public class InvestimentoService {
                 investimento.getValorAplicado(),
                 investimento.getData(),
                 investimento.getCategoria(),
-                investimento.getTipoInvestimento()
+                investimento.getTipo()
         );
     }
 

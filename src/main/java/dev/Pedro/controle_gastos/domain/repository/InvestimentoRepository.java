@@ -14,9 +14,9 @@ public interface InvestimentoRepository extends JpaRepository<Investimento, Long
 
     List<Investimento> findByDataBetween(LocalDate inicio, LocalDate fim);
 
-    List <Investimento> findByTipoInvestimento(TipoInvestimento tipoInvestimento);
+    List <Investimento> findByTipo(TipoInvestimento tipo);
 
-    List <Investimento> findByTipoInvestimentoAndDataBetween(TipoInvestimento tipoInvestimento, LocalDate inicio, LocalDate fim);
+    List <Investimento> findByTipoAndDataBetween(TipoInvestimento tipoInvestimento, LocalDate inicio, LocalDate fim);
 
 
 

@@ -44,14 +44,14 @@ public class Investimento {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)
-    private TipoInvestimento tipoInvestimento;
+    private TipoInvestimento tipo;
 
 
-    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipoInvestimento) {
+    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo) {
         this.descricao = descricao;
         this.valorAplicado = valorAplicado;
         this.data = data;
         this.categoria = categoria;
-        this.tipoInvestimento = tipoInvestimento;
+        this.tipo = tipo;
     }
 }
