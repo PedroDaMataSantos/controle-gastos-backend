@@ -78,7 +78,7 @@ public class DashboardService {
 
     public BigDecimal saidaMensal() {
 
-        return somaRegistroMensal(TipoRegistro.GASTO).subtract(aporteMensal());
+        return somaRegistroMensal(TipoRegistro.GASTO);
     }
 
     public BigDecimal investimentoMensal(){
@@ -89,7 +89,7 @@ public class DashboardService {
 
     public BigDecimal saldoMensal() {
 
-        return entradaMensal().subtract(saidaMensal());
+        return entradaMensal().subtract(saidaMensal()).subtract(aporteMensal());
 
     }
 
