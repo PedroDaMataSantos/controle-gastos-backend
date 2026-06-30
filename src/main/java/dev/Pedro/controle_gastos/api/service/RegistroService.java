@@ -27,10 +27,12 @@ public class RegistroService {
 
     private final RegistroRepository repository;
     private final InvestimentoRepository investimentoRepository;
+    private final DashboardService dashboardService;
 
-    public RegistroService(RegistroRepository repository, InvestimentoRepository investimentoRepository) {
+    public RegistroService(RegistroRepository repository, InvestimentoRepository investimentoRepository, DashboardService dashboardService) {
         this.repository = repository;
         this.investimentoRepository = investimentoRepository;
+        this.dashboardService = dashboardService;
     }
 
     //Create
@@ -147,7 +149,8 @@ public class RegistroService {
     }
         public Investimento investir(BigDecimal valor, CategoriaInvestimento categoria, String descricao) {
 
-            if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            if (valor.compareTo(BigDecimal.ZERO) <= 0 || valor.compareTo(dashboardService.saldoTotal()) > 0) {
+
                 throw new RuntimeException("O valor deve ser maior que zero.");
             }
 
