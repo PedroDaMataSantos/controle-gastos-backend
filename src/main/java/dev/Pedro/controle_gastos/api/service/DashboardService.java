@@ -52,7 +52,7 @@ public class DashboardService {
 
     public BigDecimal totalEntrada() {
 
-        return somarRegistros(registroRepository.findByTipoRegistro(TipoRegistro.RECEITA));
+        return somarRegistros(registroRepository.findByTipoRegistro(TipoRegistro.RECEITA)).subtract(aporte());
 
     }
 
@@ -63,7 +63,7 @@ public class DashboardService {
 
     public BigDecimal saldoTotal() {
 
-        return totalEntrada().subtract(totalSaida()).subtract(aporte());
+        return totalEntrada().subtract(totalSaida());
     }
 
     public BigDecimal patrimonio() {
@@ -73,7 +73,7 @@ public class DashboardService {
 
     public BigDecimal entradaMensal() {
 
-        return somaRegistroMensal(TipoRegistro.RECEITA);
+        return somaRegistroMensal(TipoRegistro.RECEITA).subtract(aporteMensal());
     }
 
     public BigDecimal saidaMensal() {
@@ -89,7 +89,7 @@ public class DashboardService {
 
     public BigDecimal saldoMensal() {
 
-        return entradaMensal().subtract(saidaMensal()).subtract(aporteMensal());
+        return entradaMensal().subtract(saidaMensal());
 
     }
 
