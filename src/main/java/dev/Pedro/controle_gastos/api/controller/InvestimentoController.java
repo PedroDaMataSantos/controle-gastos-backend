@@ -5,6 +5,7 @@ import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
 import dev.Pedro.controle_gastos.api.service.InvestimentoService;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
+import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,15 @@ public class InvestimentoController {
     ) {
 
         return service.findByPeriodo(inicio, fim);
+    }
+
+    @GetMapping("/tipo/{tipo}")
+    public List<InvestimentoResponse> buscarPorTipo(
+            @PathVariable TipoInvestimento tipo
+    ) {
+
+        return service.findByTipo(tipo);
+
     }
 
     @GetMapping

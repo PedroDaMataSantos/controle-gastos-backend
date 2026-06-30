@@ -106,6 +106,12 @@ public class InvestimentoService {
         return listResponse(repository.findAll());
     }
 
+    public List<InvestimentoResponse> findByTipo(TipoInvestimento tipo) {
+
+        return listResponse(repository.findByTipo(tipo));
+
+    }
+
 
     public Registro sacar(Long id ,BigDecimal valor) {
 
