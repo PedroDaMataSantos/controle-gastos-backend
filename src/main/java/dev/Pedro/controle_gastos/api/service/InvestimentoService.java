@@ -127,7 +127,7 @@ public class InvestimentoService {
         repository.save(investimentoExistente);
 
          Registro registro = new Registro(
-                TipoRegistro.RECEITA,
+                TipoRegistro.ENTRADA,
                 CategoriaRegistro.INVESTIMENTO,
                 investimentoExistente.getDescricao(),
                 valor,

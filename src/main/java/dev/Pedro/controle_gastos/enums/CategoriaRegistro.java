@@ -3,23 +3,23 @@ package dev.Pedro.controle_gastos.enums;
 public enum CategoriaRegistro {
 
     // GASTOS
-    ALIMENTACAO("Alimentação", TipoRegistro.GASTO),
-    LAZER("Lazer", TipoRegistro.GASTO),
-    COMBUSTIVEL("Combustível", TipoRegistro.GASTO),
-    SAUDE("Saúde", TipoRegistro.GASTO),
-    EDUCACAO("Educação", TipoRegistro.GASTO),
-    FATURA_CARTAO("Fatura do cartão", TipoRegistro.GASTO),
-    ALUGUEL("Aluguel", TipoRegistro.GASTO),
-    CONTAS("Contas", TipoRegistro.GASTO),
-    OUTROS("Outros gastos", TipoRegistro.GASTO),
-    TRIBUTO("Impostos", TipoRegistro.GASTO),
+    ALIMENTACAO("Alimentação", TipoRegistro.SAIDA),
+    LAZER("Lazer", TipoRegistro.SAIDA),
+    COMBUSTIVEL("Combustível", TipoRegistro.SAIDA),
+    SAUDE("Saúde", TipoRegistro.SAIDA),
+    EDUCACAO("Educação", TipoRegistro.SAIDA),
+    FATURA_CARTAO("Fatura do cartão", TipoRegistro.SAIDA),
+    ALUGUEL("Aluguel", TipoRegistro.SAIDA),
+    CONTAS("Contas", TipoRegistro.SAIDA),
+    OUTROS("Outros gastos", TipoRegistro.SAIDA),
+    TRIBUTO("Impostos", TipoRegistro.SAIDA),
 
     // RECEITAS
-    SALARIO("Salário", TipoRegistro.RECEITA),
-    INVESTIMENTO("Investimento", TipoRegistro.RECEITA),
-    VALES("Vales", TipoRegistro.RECEITA),
-    BENEFICIO("Benefícios", TipoRegistro.RECEITA),
-    OUTRAS("Outras receitas", TipoRegistro.RECEITA);
+    SALARIO("Salário", TipoRegistro.ENTRADA),
+    INVESTIMENTO("Investimento", TipoRegistro.ENTRADA),
+    VALES("Vales", TipoRegistro.ENTRADA),
+    BENEFICIO("Benefícios", TipoRegistro.ENTRADA),
+    OUTRAS("Outras receitas", TipoRegistro.ENTRADA);
 
 
     private final String descricao;

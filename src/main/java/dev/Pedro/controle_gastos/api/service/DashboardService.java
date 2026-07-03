@@ -58,13 +58,13 @@ public class DashboardService {
 
     public BigDecimal totalEntrada() {
 
-        return somaRegistros(registroRepository.findByTipoRegistro(TipoRegistro.RECEITA));
+        return somaRegistros(registroRepository.findByTipoRegistro(TipoRegistro.ENTRADA));
 
     }
 
     public BigDecimal totalSaida() {
 
-        return somaRegistros(registroRepository.findByTipoRegistro(TipoRegistro.GASTO));
+        return somaRegistros(registroRepository.findByTipoRegistro(TipoRegistro.SAIDA));
     }
 
     public BigDecimal saldoTotal() {
@@ -80,7 +80,7 @@ public class DashboardService {
 
         for (CategoriaRegistro categoria : CategoriaRegistro.values()) {
 
-            if (categoria.getTipo() != TipoRegistro.GASTO) {
+            if (categoria.getTipo() != TipoRegistro.SAIDA) {
                 continue;
             }
                 //COLOQUE (CHAVE , VALOR)
@@ -103,12 +103,12 @@ public class DashboardService {
 
     public BigDecimal entradaMensal() {
 
-        return somaRegistroMensal(TipoRegistro.RECEITA);
+        return somaRegistroMensal(TipoRegistro.ENTRADA);
     }
 
     public BigDecimal saidaMensal() {
 
-        return somaRegistroMensal(TipoRegistro.GASTO);
+        return somaRegistroMensal(TipoRegistro.SAIDA);
     }
 
     public BigDecimal investimentoMensal(){
@@ -136,7 +136,7 @@ public class DashboardService {
 
         for (CategoriaRegistro categoria : CategoriaRegistro.values()) {
 
-            if (categoria.getTipo() != TipoRegistro.GASTO) {
+            if (categoria.getTipo() != TipoRegistro.SAIDA) {
                 continue;
             }
                 gastos.put(categoria, somaGastosCategoriaMensal(categoria)
@@ -194,9 +194,9 @@ public class DashboardService {
 
     private BigDecimal somaGastosPorCategoria(CategoriaRegistro categoria){
 
-        if (categoria.getTipo() != TipoRegistro.GASTO) {
+        if (categoria.getTipo() != TipoRegistro.SAIDA) {
             throw new IllegalArgumentException(
-                    "A categoria " + categoria + " não pertence ao tipo GASTO.");
+                    "A categoria " + categoria + " não pertence ao tipo SAIDA.");
         }
 
         return somaRegistros(registroRepository.findByCategoria(categoria));

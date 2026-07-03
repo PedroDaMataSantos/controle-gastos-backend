@@ -1,8 +1,8 @@
 package dev.Pedro.controle_gastos.enums;
 
 public enum TipoRegistro {
-    GASTO("Gasto"),
-    RECEITA("Receita");
+    SAIDA("Gasto"),
+    ENTRADA("Receita");
 
     private final String descricao;
 

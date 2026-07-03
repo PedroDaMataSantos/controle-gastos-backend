@@ -5,9 +5,9 @@ public enum CategoriaInvestimento {
     // RECEITAS
     RENDA_FIXA("Renda Fixa"),
     RENDA_VARIAVEL("Renda Variável"),
-    CRIPTO("Cripto"),
+    BITCOIN("BITCOIN"),
     POUPANCA("Poupança" ),
-    FUNDO("Fundo" ),
+    FUNDO_IMOBILIARIO("Fundo" ),
     OUTROS("Outros Investimentos");
 
 
