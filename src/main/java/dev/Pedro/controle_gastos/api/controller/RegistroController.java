@@ -8,6 +8,7 @@ import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
 import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,12 @@ public class RegistroController {
     public Investimento investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria, @RequestParam String descricao) {
 
         return service.investir(valor, categoria, descricao);
+    }
+
+    @PutMapping("/{id}")
+    public RegistroResponse update(@PathVariable Long id,@RequestBody RegistroRequest req) {
+        return service.update(id, req);
+
     }
 
     @GetMapping
@@ -80,11 +87,6 @@ public class RegistroController {
         return service.findByPeriodo(inicio, fim);
     }
 
-    @PutMapping("/{id}")
-    public RegistroResponse update(@PathVariable Long id, @RequestBody RegistroRequest req) {
-        return service.update(id, req);
-
-    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
