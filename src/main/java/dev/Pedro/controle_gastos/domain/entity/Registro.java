@@ -25,6 +25,10 @@ public class Registro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_registro", nullable = false, length = 20)
