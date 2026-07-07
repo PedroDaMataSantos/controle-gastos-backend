@@ -28,7 +28,7 @@ public class InvestimentoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InvestimentoResponse create(@Valid @RequestBody InvestimentoRequest investimentoRequest) {
+    public InvestimentoResponse create(@RequestBody InvestimentoRequest investimentoRequest) {
 
         return service.create(investimentoRequest);
     }
@@ -41,7 +41,7 @@ public class InvestimentoController {
     }
 
     @PutMapping("/{id}")
-    public InvestimentoResponse update(@PathVariable Long id,@Valid @RequestBody InvestimentoRequest investimentoRequest) {
+    public InvestimentoResponse update(@PathVariable Long id,@RequestBody InvestimentoRequest investimentoRequest) {
 
         return service.update(id, investimentoRequest);
     }

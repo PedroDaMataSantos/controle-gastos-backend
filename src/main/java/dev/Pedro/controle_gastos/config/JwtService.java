@@ -3,6 +3,7 @@ package dev.Pedro.controle_gastos.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,13 +13,10 @@ import java.util.HexFormat;
 @Service
 public class JwtService {
 
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    private final String secretKey;
     private final long expiracaoMs = 3600000;
-
-    public JwtService() {
-        this.secretKey = "befe45c8db1a4b47df2fba03286107945b1d3253309b4ff10d7c1c793c0758b9";
-    }
 
     // Gera o token a partir do email do usuário
     public String gerarToken(String email) {
@@ -60,7 +58,3 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
-
-
-
-

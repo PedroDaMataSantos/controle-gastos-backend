@@ -29,7 +29,7 @@ public class RegistroController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistroResponse create(@Valid @RequestBody RegistroRequest registroRequest) {
+    public RegistroResponse create(@RequestBody RegistroRequest registroRequest) {
 
         return service.create(registroRequest);
     }
@@ -42,7 +42,7 @@ public class RegistroController {
     }
 
     @PutMapping("/{id}")
-    public RegistroResponse update(@PathVariable Long id,@Valid @RequestBody RegistroRequest req) {
+    public RegistroResponse update(@PathVariable Long id,@RequestBody RegistroRequest req) {
         return service.update(id, req);
 
     }

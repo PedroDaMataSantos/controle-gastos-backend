@@ -24,11 +24,11 @@ public class Usuario {
     private String nome;
 
     @NotNull
-    @Column(name = "email",nullable = false,length = 100)
+    @Column(name = "email",nullable = false,length = 100,unique = true)
     private String email;
 
     @NotNull
-    @Column(name = "senha",nullable = false,length = 100,unique = true)
+    @Column(name = "senha",nullable = false,length = 100)
     private String senha;
 
     public Usuario(String nome, String email, String senha) {
