@@ -64,6 +64,10 @@ public class InvestimentoService {
 
         investimentoExistente.setCategoria(investimentoRequest.categoria());
 
+        investimentoExistente.setTaxaJuros(investimentoRequest.taxaJuros());
+
+        investimentoExistente.setPeriodicidadeTaxa(investimentoRequest.periodicidadeTaxa());
+
         return toResponse(repository.save(investimentoExistente));
     }
 

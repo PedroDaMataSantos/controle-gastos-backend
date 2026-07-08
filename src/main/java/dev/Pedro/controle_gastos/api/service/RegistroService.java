@@ -7,10 +7,7 @@ import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
-import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
-import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
-import dev.Pedro.controle_gastos.enums.TipoInvestimento;
-import dev.Pedro.controle_gastos.enums.TipoRegistro;
+import dev.Pedro.controle_gastos.enums.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,23 +144,33 @@ public class RegistroService {
         }
 
     }
-        public Investimento investir(BigDecimal valor, CategoriaInvestimento categoria, String descricao) {
+    public Investimento investir(BigDecimal valor, CategoriaInvestimento categoria, String descricao,
+                                 boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
 
-            if (valor.compareTo(BigDecimal.ZERO) <= 0 || valor.compareTo(dashboardService.saldoTotal()) > 0) {
-
-                throw new RuntimeException("O valor deve ser maior que zero.");
-            }
-
-            Investimento investimento = new Investimento(
-                    descricao,
-                    valor,
-                    LocalDate.now(),
-                    categoria,
-                    TipoInvestimento.APORTE
-            );
-
-            return investimentoRepository.save(investimento);
+        if (valor.compareTo(BigDecimal.ZERO) <= 0 || valor.compareTo(dashboardService.saldoTotal()) > 0) {
+            throw new RuntimeException("O valor deve ser maior que zero.");
         }
+
+
+        if (categoria != CategoriaInvestimento.RENDA_FIXA && categoria != CategoriaInvestimento.POUPANCA) {
+            isentoIR = true;
+            taxaJuros = BigDecimal.ZERO;
+            periodicidadeTaxa = null;
+        }
+
+        Investimento investimento = new Investimento(
+                descricao,
+                valor,
+                LocalDate.now(),
+                categoria,
+                TipoInvestimento.APORTE,
+                isentoIR,
+                taxaJuros,
+                periodicidadeTaxa
+        );
+
+        return investimentoRepository.save(investimento);
+    }
 
 
 
