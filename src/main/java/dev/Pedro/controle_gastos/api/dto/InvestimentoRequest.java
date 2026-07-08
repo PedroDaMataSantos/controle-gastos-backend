@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.api.dto;
 
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
+import dev.Pedro.controle_gastos.enums.PeriodicidadeTaxa;
 import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +15,12 @@ public record InvestimentoRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate data,
         CategoriaInvestimento categoria,
-        TipoInvestimento tipo
+        TipoInvestimento tipo,
+        boolean isentoIR,
+        BigDecimal taxaJuros,
+        PeriodicidadeTaxa periodicidadeTaxa
+
+
 
 ) {
 }

@@ -6,10 +6,7 @@ import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
 import dev.Pedro.controle_gastos.domain.repository.RegistroRepository;
-import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
-import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
-import dev.Pedro.controle_gastos.enums.TipoInvestimento;
-import dev.Pedro.controle_gastos.enums.TipoRegistro;
+import dev.Pedro.controle_gastos.enums.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +14,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
@@ -85,7 +84,7 @@ public class InvestimentoService {
 
         Investimento investimento = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
-        ;
+
 
         return toResponse(investimento);
     }
@@ -118,11 +117,11 @@ public class InvestimentoService {
         Investimento investimentoExistente = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
 
-        if(investimentoExistente.getValorAplicado().compareTo(valor) < 0 || valor.compareTo(BigDecimal.ZERO) <= 0){
+        if(valorDisponivelSaque(investimentoExistente).compareTo(valor) < 0 || valor.compareTo(BigDecimal.ZERO) <= 0){
             throw new RuntimeException("Valor inválido");
         }
 
-        investimentoExistente.setValorAplicado(investimentoExistente.getValorAplicado().subtract(valor));
+        investimentoExistente.setValorAplicado(valorDisponivelSaque(investimentoExistente).subtract(valor));
 
         repository.save(investimentoExistente);
 
@@ -163,10 +162,120 @@ public class InvestimentoService {
 
     }
 
+    //INICIO CALCULOS MONETARIOS
+
+    private Long calcularDiasCorridos(LocalDate aplicacao, LocalDate saque) {
+
+        return DAYS.between(aplicacao, saque);
+    }
+
+    private BigDecimal calcularTaxaDiaria(Double taxa, PeriodicidadeTaxa periodicidadeTaxa) {
+
+        double taxaDiaria;
+
+
+        if (periodicidadeTaxa == PeriodicidadeTaxa.ANUAL) {
+            taxaDiaria = Math.pow(1.0 + (taxa/100),(1.0/365))-1;
+        }else{
+            taxaDiaria = Math.pow(1.0 + (taxa/100),(1.0/30))-1;
+        }
+
+        return BigDecimal.valueOf(taxaDiaria);
+    }
+
+    private BigDecimal valorBrutoFinal(Investimento investimento) {
+
+
+        LocalDate hoje = LocalDate.now();
+
+        BigDecimal taxaDiaria = calcularTaxaDiaria(investimento.getTaxaJuros().doubleValue(),investimento.getPeriodicidadeTaxa());
+        Long diasCorridos = calcularDiasCorridos(investimento.getData(),hoje);
+
+        //Formula juros compostos = valorAplicado × (1 + taxaDiária) ^ diasCorridos
+
+        BigDecimal base = BigDecimal.valueOf(1.0).add(taxaDiaria); //(1 + taxaDiaria)
+        BigDecimal fatorPotencia = base.pow(diasCorridos.intValue());//(1+taxaDiaria)^diasCorridos
+
+
+
+
+        return investimento.getValorAplicado().multiply(fatorPotencia);//valorAplicado × (1 + taxaDiária) ^ diasCorridos;
+
+
+    }
+
+    private BigDecimal calcularIOF(BigDecimal rendimentoBruto, LocalDate dataAplicacao) {
+
+        int[] tabelaIOF = {96, 93, 90, 86, 83, 80, 76, 73, 70, 66, 63, 60, 56, 53, 50, 46, 43, 40, 36, 33, 30, 26, 23, 20, 16, 13, 10, 6, 3};
+        double iof = 0;
+        double aliquota;
+        Long diasCorridos = calcularDiasCorridos(dataAplicacao, LocalDate.now());
+
+        if (diasCorridos >= 30) {
+            aliquota = 0;
+        } else if (diasCorridos <= 0) {
+            aliquota = tabelaIOF[0];
+        } else {
+            aliquota = tabelaIOF[diasCorridos.intValue() - 1];
+        }
+
+        if (rendimentoBruto.doubleValue() > 0) {
+            iof = rendimentoBruto.doubleValue() * aliquota / 100;
+        }
+
+        return BigDecimal.valueOf(iof);
+    }
+
+
+    private BigDecimal calcularIR(BigDecimal rendimentoLiquidoIOF, Investimento investimento) {
+
+        if (investimento.isIsentoIR()) {
+            return BigDecimal.ZERO;
+        }
+
+        Long diasCorridos = calcularDiasCorridos(investimento.getData(), LocalDate.now());
+        double aliquota;
+
+        if (diasCorridos <= 180) {
+            aliquota = 22.5;
+        } else if (diasCorridos <= 360) {
+            aliquota = 20;
+        } else if (diasCorridos <= 720) {
+            aliquota = 17.5;
+        } else {
+            aliquota = 15;
+        }
+
+        return BigDecimal.valueOf(rendimentoLiquidoIOF.doubleValue() * aliquota / 100);
+    }
+
+    private BigDecimal valorDisponivelSaque(Investimento investimento) {
+
+        BigDecimal valorBruto = valorBrutoFinal(investimento);
+        BigDecimal rendimento = valorBruto.subtract(investimento.getValorAplicado());
+
+        BigDecimal calcularIOF = calcularIOF(rendimento,investimento.getData());
+        BigDecimal rendimentoLiquidoIOF = rendimento.subtract(calcularIOF);
+
+        BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF,investimento);
+
+
+        return investimento.getValorAplicado().add(rendimentoLiquidoIOF).subtract(calcularIR);
+
+    }
+
+    //FIM DOS CALCULOS MONETARIOS
+
+
 
     private Investimento toEntity(InvestimentoRequest investimentoRequest) {
 
         LocalDate data;
+
+        BigDecimal taxaJuros = investimentoRequest.taxaJuros();
+        boolean isentoIR = investimentoRequest.isentoIR();
+        PeriodicidadeTaxa periodicidadeTaxa = investimentoRequest.periodicidadeTaxa();
+
 
         if (investimentoRequest.data() == null) {
             data = LocalDate.now();
@@ -174,16 +283,27 @@ public class InvestimentoService {
             data = investimentoRequest.data();
         }
 
+        if (investimentoRequest.categoria() != CategoriaInvestimento.RENDA_FIXA &&
+                investimentoRequest.categoria() != CategoriaInvestimento.POUPANCA) {
+
+            taxaJuros = BigDecimal.ZERO;
+            isentoIR = true;
+            periodicidadeTaxa = null;
+        }
+
+            return new Investimento(
+                    investimentoRequest.descricao(),
+                    investimentoRequest.valorAplicado(),
+                    data,
+                    investimentoRequest.categoria(),
+                    TipoInvestimento.INVESTIMENTO,
+                    isentoIR,
+                    taxaJuros,
+                    periodicidadeTaxa
+            );
+        }
 
 
-        return new Investimento(
-                investimentoRequest.descricao(),
-                investimentoRequest.valorAplicado(),
-                data,
-                investimentoRequest.categoria(),
-                TipoInvestimento.INVESTIMENTO
-        );
-    }
 
     private InvestimentoResponse toResponse(Investimento investimento) {
 
@@ -193,7 +313,10 @@ public class InvestimentoService {
                 investimento.getValorAplicado(),
                 investimento.getData(),
                 investimento.getCategoria(),
-                investimento.getTipo()
+                investimento.getTipo(),
+                investimento.isIsentoIR(),
+                investimento.getTaxaJuros(),
+                investimento.getPeriodicidadeTaxa()
         );
     }
 
@@ -208,6 +331,6 @@ public class InvestimentoService {
 
         return responses;
     }
-
-
 }
+
+

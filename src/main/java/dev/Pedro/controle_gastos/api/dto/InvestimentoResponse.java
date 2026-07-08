@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.api.dto;
 
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
+import dev.Pedro.controle_gastos.enums.PeriodicidadeTaxa;
 import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 
 import java.math.BigDecimal;
@@ -13,6 +14,9 @@ public record InvestimentoResponse(
         BigDecimal valorAplicado,
         LocalDate data,
         CategoriaInvestimento categoria,
-        TipoInvestimento tipo
+        TipoInvestimento tipo,
+        boolean isentoIR,
+        BigDecimal taxaJuros,
+        PeriodicidadeTaxa periodicidadeTaxa
 ) {
 }

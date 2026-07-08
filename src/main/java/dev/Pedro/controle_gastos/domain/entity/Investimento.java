@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.domain.entity;
 
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
+import dev.Pedro.controle_gastos.enums.PeriodicidadeTaxa;
 import dev.Pedro.controle_gastos.enums.TipoInvestimento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
@@ -46,12 +47,26 @@ public class Investimento {
     @Column(name = "tipo", nullable = false)
     private TipoInvestimento tipo;
 
+    @Column(name = "isentoIR" , nullable = false)
+    private boolean isentoIR;
 
-    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo) {
+    @NotNull
+    @Column(name = "taxa_juros",nullable = false, precision = 8, scale = 4)
+    private BigDecimal taxaJuros;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "periodicidade_taxa", length = 10)
+    private PeriodicidadeTaxa periodicidadeTaxa;
+
+
+    public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo, boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
         this.descricao = descricao;
         this.valorAplicado = valorAplicado;
         this.data = data;
         this.categoria = categoria;
         this.tipo = tipo;
+        this.isentoIR = isentoIR;
+        this.taxaJuros = taxaJuros;
+        this.periodicidadeTaxa = periodicidadeTaxa;
     }
 }
