@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -276,7 +277,8 @@ public class InvestimentoService {
         BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF,investimento);
 
 
-        return investimento.getValorAplicado().add(rendimentoLiquidoIOF).subtract(calcularIR);
+        return investimento.getValorAplicado().add(rendimentoLiquidoIOF).subtract(calcularIR)
+                .setScale(2, RoundingMode.HALF_EVEN);
 
     }
 
