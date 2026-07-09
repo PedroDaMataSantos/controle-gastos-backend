@@ -1,5 +1,6 @@
 package dev.Pedro.controle_gastos.api.service;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import dev.Pedro.controle_gastos.api.dto.InvestimentoRequest;
 import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,18 +175,25 @@ public class InvestimentoService {
         return DAYS.between(aplicacao, saque);
     }
 
-    private BigDecimal calcularTaxaDiaria(Double taxa, PeriodicidadeTaxa periodicidadeTaxa) {
+    private BigDecimal calcularTaxaDiaria(BigDecimal taxa, PeriodicidadeTaxa periodicidadeTaxa) {
 
-        double taxaDiaria;
+        //Formula do jurosComposto JC = (1+i) ^ (1/n) - 1
+
+        //Define em qual "casa" para
+        MathContext mc = MathContext.DECIMAL64;
+
+        BigDecimal taxaDecimal = taxa.divide(BigDecimal.valueOf(100), mc); //Converte a taxa em decimal
+
+        BigDecimal base = BigDecimal.ONE.add(taxaDecimal); // (1 + i)
+
+        BigDecimal diasPeriodo = (periodicidadeTaxa == PeriodicidadeTaxa.ANUAL) // Define se a n é 365 ou 30
+                ? BigDecimal.valueOf(365)
+                : BigDecimal.valueOf(30);
+        BigDecimal expoente = BigDecimal.ONE.divide(diasPeriodo, mc); //(1/n)
 
 
-        if (periodicidadeTaxa == PeriodicidadeTaxa.ANUAL) {
-            taxaDiaria = Math.pow(1.0 + (taxa/100),(1.0/365))-1;
-        }else{
-            taxaDiaria = Math.pow(1.0 + (taxa/100),(1.0/30))-1;
-        }
+        return BigDecimalMath.pow(base, expoente, mc).subtract(BigDecimal.ONE);//(1+i) ^ (1/n) - 1
 
-        return BigDecimal.valueOf(taxaDiaria);
     }
 
     private BigDecimal valorBrutoFinal(Investimento investimento) {
@@ -192,7 +201,7 @@ public class InvestimentoService {
 
         LocalDate hoje = LocalDate.now();
 
-        BigDecimal taxaDiaria = calcularTaxaDiaria(investimento.getTaxaJuros().doubleValue(),investimento.getPeriodicidadeTaxa());
+        BigDecimal taxaDiaria = calcularTaxaDiaria(investimento.getTaxaJuros(),investimento.getPeriodicidadeTaxa());
         Long diasCorridos = calcularDiasCorridos(investimento.getData(),hoje);
 
         //Formula juros compostos = valorAplicado × (1 + taxaDiária) ^ diasCorridos
@@ -211,23 +220,25 @@ public class InvestimentoService {
     private BigDecimal calcularIOF(BigDecimal rendimentoBruto, LocalDate dataAplicacao) {
 
         int[] tabelaIOF = {96, 93, 90, 86, 83, 80, 76, 73, 70, 66, 63, 60, 56, 53, 50, 46, 43, 40, 36, 33, 30, 26, 23, 20, 16, 13, 10, 6, 3};
-        double iof = 0;
-        double aliquota;
+        BigDecimal iof = BigDecimal.ZERO;
+        BigDecimal aliquota;
         Long diasCorridos = calcularDiasCorridos(dataAplicacao, LocalDate.now());
 
         if (diasCorridos >= 30) {
-            aliquota = 0;
+            aliquota = BigDecimal.ZERO;
         } else if (diasCorridos <= 0) {
-            aliquota = tabelaIOF[0];
+            aliquota = BigDecimal.valueOf(tabelaIOF[0]);
         } else {
-            aliquota = tabelaIOF[diasCorridos.intValue() - 1];
+            aliquota = BigDecimal.valueOf(tabelaIOF[diasCorridos.intValue() - 1]);
         }
 
-        if (rendimentoBruto.doubleValue() > 0) {
-            iof = rendimentoBruto.doubleValue() * aliquota / 100;
+        if (rendimentoBruto.compareTo(BigDecimal.ZERO) > 0) {
+
+            //Caso a aliquota tenha valores estranhos cujo a divisão dê dizima ex 0,333... é necessário colcoar um MC na divisão
+            iof = rendimentoBruto.multiply(aliquota.divide(BigDecimal.valueOf(100)));
         }
 
-        return BigDecimal.valueOf(iof);
+        return iof;
     }
 
 
@@ -238,19 +249,20 @@ public class InvestimentoService {
         }
 
         Long diasCorridos = calcularDiasCorridos(investimento.getData(), LocalDate.now());
-        double aliquota;
+        BigDecimal aliquota;
 
         if (diasCorridos <= 180) {
-            aliquota = 22.5;
+            aliquota = BigDecimal.valueOf(22.5);
         } else if (diasCorridos <= 360) {
-            aliquota = 20;
+            aliquota = BigDecimal.valueOf(20);
         } else if (diasCorridos <= 720) {
-            aliquota = 17.5;
+            aliquota = BigDecimal.valueOf(17.5);
         } else {
-            aliquota = 15;
+            aliquota = BigDecimal.valueOf(15);
         }
 
-        return BigDecimal.valueOf(rendimentoLiquidoIOF.doubleValue() * aliquota / 100);
+        //Caso a aliquota tenha valores estranhos cujo a divisão dê dizima ex 0,333... é necessário colcoar um MC na divisão
+        return rendimentoLiquidoIOF.multiply(aliquota.divide(BigDecimal.valueOf(100)));
     }
 
     private BigDecimal valorDisponivelSaque(Investimento investimento) {
