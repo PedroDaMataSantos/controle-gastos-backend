@@ -119,34 +119,33 @@ public class InvestimentoService {
     }
 
 
-    public Registro sacar(Long id ,BigDecimal valor) {
+    public Registro sacar(Long id, BigDecimal valor) {
 
         Investimento investimentoExistente = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
 
-        if(valorDisponivelSaque(investimentoExistente).compareTo(valor) < 0 || valor.compareTo(BigDecimal.ZERO) <= 0){
+        BigDecimal disponivel = valorDisponivelSaque(investimentoExistente);
+
+        if (disponivel.compareTo(valor) < 0 || valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Valor inválido");
         }
 
-        investimentoExistente.setValorAplicado(valorDisponivelSaque(investimentoExistente).subtract(valor));
+        investimentoExistente.setValorAplicado(disponivel.subtract(valor));   // reusa
+        investimentoExistente.setUltimoSaque(LocalDate.now());
 
         repository.save(investimentoExistente);
 
-         Registro registro = new Registro(
+        Registro registro = new Registro(
                 TipoRegistro.ENTRADA,
                 CategoriaRegistro.INVESTIMENTO,
                 investimentoExistente.getDescricao(),
                 valor,
                 LocalDate.now()
-
         );
-
 
         registroRepository.save(registro);
 
         return registro;
-
-
     }
 
     public void validaCampoObg(InvestimentoRequest investimentoRequest) {
@@ -170,6 +169,13 @@ public class InvestimentoService {
     }
 
     //INICIO CALCULOS MONETARIOS
+
+
+    private LocalDate dataReferencia(Investimento investimento) {
+        return investimento.getUltimoSaque() == null
+                ? investimento.getData()
+                : investimento.getUltimoSaque();
+    }
 
     private Long calcularDiasCorridos(LocalDate aplicacao, LocalDate saque) {
 
@@ -200,10 +206,11 @@ public class InvestimentoService {
     private BigDecimal valorBrutoFinal(Investimento investimento) {
 
 
-        LocalDate hoje = LocalDate.now();
+
 
         BigDecimal taxaDiaria = calcularTaxaDiaria(investimento.getTaxaJuros(),investimento.getPeriodicidadeTaxa());
-        Long diasCorridos = calcularDiasCorridos(investimento.getData(),hoje);
+        Long diasCorridos = calcularDiasCorridos(dataReferencia(investimento), LocalDate.now());
+
 
         //Formula juros compostos = valorAplicado × (1 + taxaDiária) ^ diasCorridos
 
@@ -250,7 +257,7 @@ public class InvestimentoService {
             return BigDecimal.ZERO;
         }
 
-        Long diasCorridos = calcularDiasCorridos(investimento.getData(), LocalDate.now());
+        Long diasCorridos = calcularDiasCorridos(dataReferencia(investimento), LocalDate.now());
         BigDecimal aliquota;
 
         if (diasCorridos <= 180) {
@@ -276,7 +283,7 @@ public class InvestimentoService {
             BigDecimal valorBruto = valorBrutoFinal(investimento);
             BigDecimal rendimento = valorBruto.subtract(investimento.getValorAplicado());
 
-            BigDecimal calcularIOF = calcularIOF(rendimento, investimento.getData());
+            BigDecimal calcularIOF = calcularIOF(rendimento, dataReferencia(investimento));
             BigDecimal rendimentoLiquidoIOF = rendimento.subtract(calcularIOF);
 
             BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF, investimento);
@@ -339,7 +346,8 @@ public class InvestimentoService {
                 investimento.getTipo(),
                 investimento.isIsentoIR(),
                 investimento.getTaxaJuros(),
-                investimento.getPeriodicidadeTaxa()
+                investimento.getPeriodicidadeTaxa(),
+                investimento.getUltimoSaque()
         );
     }
 

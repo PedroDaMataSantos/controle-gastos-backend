@@ -17,6 +17,7 @@ public record InvestimentoResponse(
         TipoInvestimento tipo,
         boolean isentoIR,
         BigDecimal taxaJuros,
-        PeriodicidadeTaxa periodicidadeTaxa
+        PeriodicidadeTaxa periodicidadeTaxa,
+        LocalDate ultimoSaque
 ) {
 }

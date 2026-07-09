@@ -58,6 +58,9 @@ public class Investimento {
     @Column(name = "periodicidade_taxa", length = 10)
     private PeriodicidadeTaxa periodicidadeTaxa;
 
+    @Column(name = "ultimo_saque")
+    private LocalDate ultimoSaque;
+
 
     public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo, boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
         this.descricao = descricao;
