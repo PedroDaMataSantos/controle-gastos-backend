@@ -220,6 +220,7 @@ public class InvestimentoService {
 
     private BigDecimal calcularIOF(BigDecimal rendimentoBruto, LocalDate dataAplicacao) {
 
+
         int[] tabelaIOF = {96, 93, 90, 86, 83, 80, 76, 73, 70, 66, 63, 60, 56, 53, 50, 46, 43, 40, 36, 33, 30, 26, 23, 20, 16, 13, 10, 6, 3};
         BigDecimal iof = BigDecimal.ZERO;
         BigDecimal aliquota;
@@ -268,17 +269,21 @@ public class InvestimentoService {
 
     private BigDecimal valorDisponivelSaque(Investimento investimento) {
 
-        BigDecimal valorBruto = valorBrutoFinal(investimento);
-        BigDecimal rendimento = valorBruto.subtract(investimento.getValorAplicado());
+        if (investimento.getCategoria() != CategoriaInvestimento.RENDA_FIXA
+                && investimento.getCategoria() != CategoriaInvestimento.POUPANCA) {
+            return investimento.getValorAplicado();
+        }
+            BigDecimal valorBruto = valorBrutoFinal(investimento);
+            BigDecimal rendimento = valorBruto.subtract(investimento.getValorAplicado());
 
-        BigDecimal calcularIOF = calcularIOF(rendimento,investimento.getData());
-        BigDecimal rendimentoLiquidoIOF = rendimento.subtract(calcularIOF);
+            BigDecimal calcularIOF = calcularIOF(rendimento, investimento.getData());
+            BigDecimal rendimentoLiquidoIOF = rendimento.subtract(calcularIOF);
 
-        BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF,investimento);
+            BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF, investimento);
 
 
-        return investimento.getValorAplicado().add(rendimentoLiquidoIOF).subtract(calcularIR)
-                .setScale(2, RoundingMode.HALF_EVEN);
+            return investimento.getValorAplicado().add(rendimentoLiquidoIOF).subtract(calcularIR)
+                    .setScale(2, RoundingMode.HALF_EVEN);
 
     }
 
