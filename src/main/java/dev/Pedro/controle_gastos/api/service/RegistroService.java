@@ -152,10 +152,17 @@ public class RegistroService {
         }
 
 
-        if (categoria != CategoriaInvestimento.RENDA_FIXA && categoria != CategoriaInvestimento.POUPANCA) {
-            isentoIR = true;
+        if (categoria == CategoriaInvestimento.OUTROS) {
             taxaJuros = BigDecimal.ZERO;
             periodicidadeTaxa = null;
+            isentoIR = true;   // OUTROS não rende, então não há IR mesmo
+        }
+
+
+        if (categoria == CategoriaInvestimento.LCI
+                || categoria == CategoriaInvestimento.LCA
+                || categoria == CategoriaInvestimento.POUPANCA) {
+            isentoIR = true;
         }
 
         Investimento investimento = new Investimento(
