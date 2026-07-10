@@ -158,6 +158,15 @@ public class InvestimentoService {
             throw new RuntimeException("Categoria é um campo Obrigatório");
         }
 
+        if (investimentoRequest.categoria() != CategoriaInvestimento.OUTROS) {
+            if (investimentoRequest.taxaJuros() == null) {
+                throw new RuntimeException("Taxa de juros é obrigatória para esta categoria");
+            }
+            if (investimentoRequest.periodicidadeTaxa() == null) {
+                throw new RuntimeException("Periodicidade da taxa é obrigatória para esta categoria");
+            }
+        }
+
     }
 
     public void validaValor(InvestimentoRequest investimentoRequest){
@@ -304,6 +313,7 @@ public class InvestimentoService {
         BigDecimal taxaJuros = investimentoRequest.taxaJuros();
         boolean isentoIR = investimentoRequest.isentoIR();
         PeriodicidadeTaxa periodicidadeTaxa = investimentoRequest.periodicidadeTaxa();
+        CategoriaInvestimento categoria = investimentoRequest.categoria();
 
 
         if (investimentoRequest.data() == null) {
@@ -312,11 +322,17 @@ public class InvestimentoService {
             data = investimentoRequest.data();
         }
 
-        if (investimentoRequest.categoria() == CategoriaInvestimento.OUTROS) {
-
+        if (categoria == CategoriaInvestimento.OUTROS) {
             taxaJuros = BigDecimal.ZERO;
-            isentoIR = true;
             periodicidadeTaxa = null;
+            isentoIR = true;   // OUTROS não rende, então não há IR mesmo
+        }
+
+
+        if (categoria == CategoriaInvestimento.LCI
+                || categoria == CategoriaInvestimento.LCA
+                || categoria == CategoriaInvestimento.POUPANCA) {
+            isentoIR = true;
         }
 
             return new Investimento(
