@@ -276,8 +276,7 @@ public class InvestimentoService {
 
     private BigDecimal valorDisponivelSaque(Investimento investimento) {
 
-        if (investimento.getCategoria() != CategoriaInvestimento.RENDA_FIXA
-                && investimento.getCategoria() != CategoriaInvestimento.POUPANCA) {
+        if (investimento.getCategoria() == CategoriaInvestimento.OUTROS) {
             return investimento.getValorAplicado();
         }
             BigDecimal valorBruto = valorBrutoFinal(investimento);
@@ -313,8 +312,7 @@ public class InvestimentoService {
             data = investimentoRequest.data();
         }
 
-        if (investimentoRequest.categoria() != CategoriaInvestimento.RENDA_FIXA &&
-                investimentoRequest.categoria() != CategoriaInvestimento.POUPANCA) {
+        if (investimentoRequest.categoria() == CategoriaInvestimento.OUTROS) {
 
             taxaJuros = BigDecimal.ZERO;
             isentoIR = true;

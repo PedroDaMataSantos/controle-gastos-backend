@@ -3,11 +3,10 @@ package dev.Pedro.controle_gastos.enums;
 public enum CategoriaInvestimento {
 
     // RECEITAS
-    RENDA_FIXA("Renda Fixa"),
-    RENDA_VARIAVEL("Renda Variável"),
-    BITCOIN("BITCOIN"),
+    CDB("CDB"),
+    LCI("LCI"),
+    LCA("LCA"),
     POUPANCA("Poupança" ),
-    FUNDO_IMOBILIARIO("Fundo" ),
     OUTROS("Outros Investimentos");
 
 
