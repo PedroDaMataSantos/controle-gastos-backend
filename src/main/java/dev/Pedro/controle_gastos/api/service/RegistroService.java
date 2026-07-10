@@ -144,10 +144,10 @@ public class RegistroService {
         }
 
     }
-    public Investimento investir(BigDecimal valor, CategoriaInvestimento categoria, String descricao,
+    public Investimento investir(BigDecimal valorAplicado, CategoriaInvestimento categoria, String descricao,
                                  boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
 
-        if (valor.compareTo(BigDecimal.ZERO) <= 0 || valor.compareTo(dashboardService.saldoTotal()) > 0) {
+        if (valorAplicado.compareTo(BigDecimal.ZERO) <= 0 || valorAplicado.compareTo(dashboardService.saldoTotal()) > 0) {
             throw new RuntimeException("O valor deve ser maior que zero.");
         }
 
@@ -167,14 +167,13 @@ public class RegistroService {
 
         Investimento investimento = new Investimento(
                 descricao,
-                valor,
+                valorAplicado,
                 LocalDate.now(),
                 categoria,
                 TipoInvestimento.APORTE,
                 isentoIR,
                 taxaJuros,
-                periodicidadeTaxa
-        );
+                periodicidadeTaxa);
 
         return investimentoRepository.save(investimento);
     }

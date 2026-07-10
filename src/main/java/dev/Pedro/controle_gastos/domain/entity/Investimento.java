@@ -34,6 +34,12 @@ public class Investimento {
     private BigDecimal valorAplicado;
 
     @NotNull
+    @Digits(integer = 10, fraction = 2)
+    @Column(name = "valorPosSaque", nullable = false, precision = 12, scale = 2)
+    private BigDecimal valorPosSaque;
+
+
+    @NotNull
     @Column(name = "data", nullable = false)
     private LocalDate data;
 
@@ -65,6 +71,7 @@ public class Investimento {
     public Investimento(String descricao, BigDecimal valorAplicado, LocalDate data, CategoriaInvestimento categoria, TipoInvestimento tipo, boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
         this.descricao = descricao;
         this.valorAplicado = valorAplicado;
+        this.valorPosSaque = valorAplicado;
         this.data = data;
         this.categoria = categoria;
         this.tipo = tipo;

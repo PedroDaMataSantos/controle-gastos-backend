@@ -15,6 +15,8 @@ public record DashboardResponse(
         BigDecimal investimentoTotal,
         BigDecimal investimentoMensal,
         BigDecimal patrimonio,
+        BigDecimal rendimento,
+        BigDecimal rendimentoMensal,
         Map<CategoriaRegistro, BigDecimal> gastoCategoriaTotal,
         Map<CategoriaRegistro, BigDecimal> gastoCategoriaMensal
 

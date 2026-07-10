@@ -2,6 +2,7 @@ package dev.Pedro.controle_gastos.api.controller;
 
 import dev.Pedro.controle_gastos.api.dto.InvestimentoRequest;
 import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
+import dev.Pedro.controle_gastos.api.dto.PrevisaoSaqueResponse;
 import dev.Pedro.controle_gastos.api.service.InvestimentoService;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
@@ -83,6 +84,11 @@ public class InvestimentoController {
     public List<InvestimentoResponse> findAll() {
 
         return service.findAll();
+    }
+
+    @GetMapping("/{id}/previsao-saque")
+    public PrevisaoSaqueResponse previsaoSaque(@PathVariable Long id) {
+        return service.previsaoSaque(id);
     }
 
     @DeleteMapping("/{id}")

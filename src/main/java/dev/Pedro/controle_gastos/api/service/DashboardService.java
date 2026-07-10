@@ -24,13 +24,13 @@ public class DashboardService {
 
     private final RegistroRepository registroRepository;
     private final InvestimentoRepository investimentoRepository;
+    private final InvestimentoService investimentoService;
 
-    public DashboardService(RegistroRepository registroRepository, InvestimentoRepository investimentoRepository) {
-
+    public DashboardService(RegistroRepository registroRepository, InvestimentoRepository investimentoRepository, InvestimentoService investimentoService) {
         this.registroRepository = registroRepository;
         this.investimentoRepository = investimentoRepository;
+        this.investimentoService = investimentoService;
     }
-
 
     public DashboardResponse dashboard() {
 
@@ -44,6 +44,8 @@ public class DashboardService {
                 totalInvestido(),
                 investimentoMensal(),
                 patrimonio(),
+                rendimentoTotal(),
+                rendimentoMensal(),
                 gastoCategoriaTotal(),
                 gastoCategoriaMensal()
 
@@ -101,6 +103,10 @@ public class DashboardService {
         return saldoTotal().add(totalInvestido());
     }
 
+    public BigDecimal rendimentoTotal() {
+        return somaRendimentos(investimentoRepository.findAll());
+    }
+
     public BigDecimal entradaMensal() {
 
         return somaRegistroMensal(TipoRegistro.ENTRADA);
@@ -128,6 +134,11 @@ public class DashboardService {
         return somaAporteMensal(TipoInvestimento.APORTE);
     }
 
+  public BigDecimal rendimentoMensal() {
+
+        return somaRendimentoMensal();
+  }
+
 
 
     public Map<CategoriaRegistro, BigDecimal> gastoCategoriaMensal() {
@@ -147,6 +158,7 @@ public class DashboardService {
         return gastos;
     }
 
+    //CALCULOS
 
 
     private BigDecimal somaRegistros(List<Registro> registros) {
@@ -174,6 +186,16 @@ public class DashboardService {
 
         return total;
     }
+    private BigDecimal somaRendimentos(List<Investimento> investimentos) {
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Investimento investimento : investimentos) {
+            total = total.add(investimentoService.calcularRendimento(investimento));
+        }
+        return total;
+    }
+
 
     private BigDecimal somaRegistroMensal(TipoRegistro tipo){
 
@@ -245,6 +267,16 @@ public class DashboardService {
          return somaRegistros(registroRepository.findByCategoriaAndDataBetween(categoria,inicio,fim));
 
 
+
+    }
+
+    private BigDecimal somaRendimentoMensal(){
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.withDayOfMonth(1);
+        LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+
+        return somaRendimentos(investimentoRepository.findByDataBetween(inicio,fim));
 
     }
 

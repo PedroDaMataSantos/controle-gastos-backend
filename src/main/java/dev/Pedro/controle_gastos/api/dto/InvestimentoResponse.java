@@ -12,12 +12,14 @@ public record InvestimentoResponse(
         Long id,
         String descricao,
         BigDecimal valorAplicado,
+        BigDecimal valorAtual,
         LocalDate data,
         CategoriaInvestimento categoria,
         TipoInvestimento tipo,
         boolean isentoIR,
         BigDecimal taxaJuros,
         PeriodicidadeTaxa periodicidadeTaxa,
-        LocalDate ultimoSaque
+        LocalDate ultimoSaque,
+        BigDecimal rendimento
 ) {
 }

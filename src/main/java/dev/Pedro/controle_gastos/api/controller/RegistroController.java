@@ -7,8 +7,8 @@ import dev.Pedro.controle_gastos.api.service.RegistroService;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.enums.CategoriaInvestimento;
 import dev.Pedro.controle_gastos.enums.CategoriaRegistro;
+import dev.Pedro.controle_gastos.enums.PeriodicidadeTaxa;
 import dev.Pedro.controle_gastos.enums.TipoRegistro;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +36,11 @@ public class RegistroController {
 
     @PostMapping("/aportar")
     @ResponseStatus(HttpStatus.CREATED)
-    public Investimento investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria, @RequestParam String descricao) {
+    public Investimento investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria,
+                                 @RequestParam String descricao, @RequestParam boolean isentoIR ,
+                                 @RequestParam BigDecimal taxaJuros, @RequestParam PeriodicidadeTaxa periodicidadeTaxa) {
 
-        return service.investir(valor, categoria, descricao);
+        return service.investir(valor, categoria, descricao, isentoIR, taxaJuros, periodicidadeTaxa);
     }
 
     @PutMapping("/{id}")
