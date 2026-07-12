@@ -20,6 +20,7 @@ public record InvestimentoResponse(
         BigDecimal taxaJuros,
         PeriodicidadeTaxa periodicidadeTaxa,
         LocalDate ultimoSaque,
-        BigDecimal rendimento
+        BigDecimal rendimento,
+        BigDecimal valorBruto
 ) {
 }

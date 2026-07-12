@@ -178,31 +178,14 @@ public class InvestimentoService {
 
     //INFORMAÇÕES para saque
 
-    //Esse metodo precisou de rounding em cada operação pois deu erro de lenght
+
     public PrevisaoSaqueResponse previsaoSaque(Long id) {
 
         Investimento investimento = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
 
-        if (investimento.getCategoria() == CategoriaInvestimento.OUTROS) {
-            BigDecimal valor = investimento.getValorPosSaque().setScale(2, RoundingMode.HALF_EVEN);
-            return new PrevisaoSaqueResponse(valor, BigDecimal.ZERO, BigDecimal.ZERO, valor);
-        }
+        return calcularInformacoesSaque(investimento);
 
-        BigDecimal valorBruto = valorBrutoFinal(investimento).setScale(2, RoundingMode.HALF_EVEN);
-        BigDecimal rendimento = valorBruto.subtract(investimento.getValorPosSaque());
-
-        BigDecimal iof = calcularIOF(rendimento, dataReferencia(investimento)).setScale(2, RoundingMode.HALF_EVEN);
-        BigDecimal rendimentoLiquidoIOF = rendimento.subtract(iof);
-
-        BigDecimal ir = calcularIR(rendimentoLiquidoIOF, investimento).setScale(2, RoundingMode.HALF_EVEN);
-
-        BigDecimal valorDisponivel = investimento.getValorPosSaque()
-                .add(rendimentoLiquidoIOF)
-                .subtract(ir)
-                .setScale(2, RoundingMode.HALF_EVEN);
-
-        return new PrevisaoSaqueResponse(valorBruto, iof, ir, valorDisponivel);
     }
 
     //INICIO CALCULOS MONETARIOS
@@ -313,26 +296,49 @@ public class InvestimentoService {
 
     private BigDecimal valorDisponivelSaque(Investimento investimento) {
 
-        if (investimento.getCategoria() == CategoriaInvestimento.OUTROS) {
-            return investimento.getValorPosSaque();
-        }
-            BigDecimal valorBruto = valorBrutoFinal(investimento);
-            BigDecimal rendimento = valorBruto.subtract(investimento.getValorPosSaque());
-
-            BigDecimal calcularIOF = calcularIOF(rendimento, dataReferencia(investimento));
-            BigDecimal rendimentoLiquidoIOF = rendimento.subtract(calcularIOF);
-
-            BigDecimal calcularIR = calcularIR(rendimentoLiquidoIOF, investimento);
-
-
-            return investimento.getValorPosSaque().add(rendimentoLiquidoIOF).subtract(calcularIR)
-                    .setScale(2, RoundingMode.HALF_EVEN);
+     return calcularInformacoesSaque(investimento).valorDisponivel();
 
     }
 
     public BigDecimal calcularRendimento(Investimento investimento) {
 
         return valorDisponivelSaque(investimento).subtract(investimento.getValorPosSaque());
+    }
+
+    //Esse metodo precisou de rounding em cada operação pois deu erro de lenght
+    private PrevisaoSaqueResponse calcularInformacoesSaque(Investimento investimento) {
+
+        if (investimento.getCategoria() == CategoriaInvestimento.OUTROS) {
+
+            BigDecimal valor = investimento.getValorPosSaque().setScale(2, RoundingMode.HALF_EVEN);
+
+            return new PrevisaoSaqueResponse(
+                    valor,
+                    BigDecimal.ZERO,
+                    BigDecimal.ZERO, valor
+            );
+        }
+
+        BigDecimal valorBruto = valorBrutoFinal(investimento).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal rendimento = valorBruto.subtract(investimento.getValorPosSaque());
+
+        BigDecimal iof = calcularIOF(rendimento, dataReferencia(investimento)).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal rendimentoLiquidoIOF = rendimento.subtract(iof);
+
+        BigDecimal ir = calcularIR(rendimentoLiquidoIOF, investimento).setScale(2, RoundingMode.HALF_EVEN);
+
+        BigDecimal valorDisponivel = investimento.getValorPosSaque()
+                .add(rendimentoLiquidoIOF)
+                .subtract(ir)
+                .setScale(2, RoundingMode.HALF_EVEN);
+
+        return new PrevisaoSaqueResponse(
+                valorBruto,
+                iof,
+                ir,
+                valorDisponivel
+        );
+
     }
 
     //FIM DOS CALCULOS MONETARIOS
@@ -395,7 +401,8 @@ public class InvestimentoService {
                 investimento.getTaxaJuros(),
                 investimento.getPeriodicidadeTaxa(),
                 investimento.getUltimoSaque(),
-                calcularRendimento(investimento)
+                calcularRendimento(investimento),
+                calcularInformacoesSaque(investimento).valorBruto()
         );
     }
 

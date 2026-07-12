@@ -4,6 +4,15 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Banco de dados local (dados reais — não vai pro repo) ###
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+### Segredos locais ###
+src/main/resources/application-local.properties
+
+
 ### STS ###
 .apt_generated
 .classpath
