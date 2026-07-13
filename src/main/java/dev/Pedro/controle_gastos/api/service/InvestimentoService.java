@@ -31,13 +31,10 @@ public class InvestimentoService {
 
     private final InvestimentoRepository repository;
     private final RegistroRepository registroRepository;
-    private final RegistroService registroService;
 
-    public InvestimentoService(InvestimentoRepository investimentoRepository, RegistroRepository registroRepository, RegistroService registroService) {
-
-        this.repository = investimentoRepository;
+    public InvestimentoService(InvestimentoRepository repository, RegistroRepository registroRepository) {
+        this.repository = repository;
         this.registroRepository = registroRepository;
-        this.registroService = registroService;
     }
 
     public InvestimentoResponse create(InvestimentoRequest investimentoRequest) {
@@ -120,7 +117,7 @@ public class InvestimentoService {
 
     }
 
-
+    //Ele tem que criar manualmente o Response porque se ele chamr o RegistroSercvice como o RegistroService chama essa classe , eles criam um loop e o spring trava
     public RegistroResponse sacar(Long id, BigDecimal valor) {
 
         Investimento investimentoExistente = repository.findById(id).
@@ -145,8 +142,16 @@ public class InvestimentoService {
                 LocalDate.now()
         );
 
+        Registro registroSalvo = registroRepository.save(registro);
 
-        return registroService.toResponse(registroRepository.save(registro));
+        return new RegistroResponse(
+                registroSalvo.getId(),
+                registroSalvo.getTipoRegistro(),
+                registroSalvo.getCategoria(),
+                registroSalvo.getDescricao(),
+                registroSalvo.getValor(),
+                registroSalvo.getData()
+        );
     }
 
     public void validaCampoObg(InvestimentoRequest investimentoRequest) {

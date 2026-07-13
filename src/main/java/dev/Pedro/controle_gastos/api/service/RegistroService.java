@@ -178,6 +178,8 @@ public class RegistroService {
                 taxaJuros,
                 periodicidadeTaxa);
 
+
+
         return investimentoService.toResponse(investimentoRepository.save(investimento));
     }
 
