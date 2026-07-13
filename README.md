@@ -123,7 +123,7 @@ Controller → Service → Repository → Banco de Dados
 # Status do Projeto
 
 ```text
-Em desenvolvimento — V1 concluída, módulo de investimentos e dashboard consolidado implementados
+Finalizado — V 1.5.0.0 concluída , calculos financeiros de rendimentos são realizados
 ```
 
 ---
