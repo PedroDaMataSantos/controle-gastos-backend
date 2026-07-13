@@ -145,9 +145,8 @@ public class InvestimentoService {
                 LocalDate.now()
         );
 
-        Registro salvo = registroRepository.save(registro);
 
-        return registroService.toResponse(salvo) ;
+        return registroService.toResponse(registroRepository.save(registro));
     }
 
     public void validaCampoObg(InvestimentoRequest investimentoRequest) {
