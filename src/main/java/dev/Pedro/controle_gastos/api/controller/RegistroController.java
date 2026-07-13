@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.api.controller;
 
 
+import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.api.service.RegistroService;
@@ -36,9 +37,9 @@ public class RegistroController {
 
     @PostMapping("/aportar")
     @ResponseStatus(HttpStatus.CREATED)
-    public Investimento investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria,
-                                 @RequestParam String descricao, @RequestParam boolean isentoIR ,
-                                 @RequestParam BigDecimal taxaJuros, @RequestParam PeriodicidadeTaxa periodicidadeTaxa) {
+    public InvestimentoResponse investir(@RequestParam BigDecimal valor, @RequestParam CategoriaInvestimento categoria,
+                                         @RequestParam String descricao, @RequestParam boolean isentoIR ,
+                                         @RequestParam BigDecimal taxaJuros, @RequestParam PeriodicidadeTaxa periodicidadeTaxa) {
 
         return service.investir(valor, categoria, descricao, isentoIR, taxaJuros, periodicidadeTaxa);
     }

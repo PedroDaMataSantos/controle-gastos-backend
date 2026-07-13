@@ -1,6 +1,7 @@
 package dev.Pedro.controle_gastos.api.service;
 
 
+import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
 import dev.Pedro.controle_gastos.api.dto.RegistroRequest;
 import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
@@ -25,11 +26,13 @@ public class RegistroService {
     private final RegistroRepository repository;
     private final InvestimentoRepository investimentoRepository;
     private final DashboardService dashboardService;
+    private final InvestimentoService investimentoService;
 
-    public RegistroService(RegistroRepository repository, InvestimentoRepository investimentoRepository, DashboardService dashboardService) {
+    public RegistroService(RegistroRepository repository, InvestimentoRepository investimentoRepository, DashboardService dashboardService, InvestimentoService investimentoService) {
         this.repository = repository;
         this.investimentoRepository = investimentoRepository;
         this.dashboardService = dashboardService;
+        this.investimentoService = investimentoService;
     }
 
     //Create
@@ -144,8 +147,8 @@ public class RegistroService {
         }
 
     }
-    public Investimento investir(BigDecimal valorAplicado, CategoriaInvestimento categoria, String descricao,
-                                 boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
+    public InvestimentoResponse investir(BigDecimal valorAplicado, CategoriaInvestimento categoria, String descricao,
+                                         boolean isentoIR, BigDecimal taxaJuros, PeriodicidadeTaxa periodicidadeTaxa) {
 
         if (valorAplicado.compareTo(BigDecimal.ZERO) <= 0 || valorAplicado.compareTo(dashboardService.saldoTotal()) > 0) {
             throw new RuntimeException("O valor deve ser maior que zero.");
@@ -175,7 +178,9 @@ public class RegistroService {
                 taxaJuros,
                 periodicidadeTaxa);
 
-        return investimentoRepository.save(investimento);
+        Investimento salvo = investimentoRepository.save(investimento);
+
+        return investimentoService.toResponse(salvo);
     }
 
 
@@ -219,9 +224,9 @@ public class RegistroService {
                 data
         );
     }
-
+    //Package - private
     //Transforma a saída em Response para não devolver na forma de entity
-    private RegistroResponse toResponse(Registro registro) {
+     RegistroResponse toResponse(Registro registro) {
 
         return new RegistroResponse(
                 registro.getId(),

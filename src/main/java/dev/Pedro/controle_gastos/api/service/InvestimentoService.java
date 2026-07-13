@@ -4,6 +4,7 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import dev.Pedro.controle_gastos.api.dto.InvestimentoRequest;
 import dev.Pedro.controle_gastos.api.dto.InvestimentoResponse;
 import dev.Pedro.controle_gastos.api.dto.PrevisaoSaqueResponse;
+import dev.Pedro.controle_gastos.api.dto.RegistroResponse;
 import dev.Pedro.controle_gastos.domain.entity.Investimento;
 import dev.Pedro.controle_gastos.domain.entity.Registro;
 import dev.Pedro.controle_gastos.domain.repository.InvestimentoRepository;
@@ -30,11 +31,13 @@ public class InvestimentoService {
 
     private final InvestimentoRepository repository;
     private final RegistroRepository registroRepository;
+    private final RegistroService registroService;
 
-    public InvestimentoService(InvestimentoRepository investimentoRepository, RegistroRepository registroRepository) {
+    public InvestimentoService(InvestimentoRepository investimentoRepository, RegistroRepository registroRepository, RegistroService registroService) {
 
         this.repository = investimentoRepository;
         this.registroRepository = registroRepository;
+        this.registroService = registroService;
     }
 
     public InvestimentoResponse create(InvestimentoRequest investimentoRequest) {
@@ -118,7 +121,7 @@ public class InvestimentoService {
     }
 
 
-    public Registro sacar(Long id, BigDecimal valor) {
+    public RegistroResponse sacar(Long id, BigDecimal valor) {
 
         Investimento investimentoExistente = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Investimento não encontrado"));
@@ -142,9 +145,9 @@ public class InvestimentoService {
                 LocalDate.now()
         );
 
-        registroRepository.save(registro);
+        Registro salvo = registroRepository.save(registro);
 
-        return registro;
+        return registroService.toResponse(salvo) ;
     }
 
     public void validaCampoObg(InvestimentoRequest investimentoRequest) {
@@ -345,7 +348,7 @@ public class InvestimentoService {
 
 
 
-    private Investimento toEntity(InvestimentoRequest investimentoRequest) {
+     private Investimento toEntity(InvestimentoRequest investimentoRequest) {
 
         LocalDate data;
 
@@ -386,8 +389,8 @@ public class InvestimentoService {
         }
 
 
-
-    private InvestimentoResponse toResponse(Investimento investimento) {
+    //package-private
+     InvestimentoResponse toResponse(Investimento investimento) {
 
         return new InvestimentoResponse(
                 investimento.getId(),
