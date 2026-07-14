@@ -123,7 +123,7 @@ Controller → Service → Repository → Banco de Dados
 # Status do Projeto
 
 ```text
-Finalizado — V 1.5.0.0 concluída , calculos financeiros de rendimentos são realizados
+Finalizado — V 1.5.1. concluída , calculos financeiros de rendimentos são realizados , e bugs da função investir corrigido
 ```
 
 ---
